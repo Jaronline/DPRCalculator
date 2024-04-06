@@ -4,6 +4,8 @@ const a = function (roundCount) {
                 <legend>
                     <span>Round #${roundCount + 1}</span>
                 </legend>
+                <button type="button" id="round.${roundCount}.newRoundButton">+</button>
+                <button type="button" id="round.${roundCount}.removeRoundButton">-</button>
         </fieldset>
     `;
 }

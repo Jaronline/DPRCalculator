@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>DPR Calculator</title>
+
 </head>
 <body>
 
@@ -11,30 +12,31 @@
         <legend>
             <span>Round #1</span>
         </legend>
-        <fieldset class="p-fieldset p-component" id="attack.0">
-            <div>
-                <legend>
-                    <span>Attack #1</span>
-                </legend>
-            </div>
-            <button type="button">
-                <span class="plus" id="attack.0.newAttackButton">+</span>
+        <button type="button" id="round.0.newRoundButton">+</button>
+        <button type="button" id="round.0.removeRoundButton">-</button>
+        <fieldset class="p-fieldset p-component" id="round.0.attack.0">
+            <legend>
+                <span>Attack #1</span>
+            </legend>
+            <button type="button" id="round.0.attack.0.newAttackButton">
+                <span class="plus">+</span>
             </button>
-            <button type="button">
-                <span class="copy" id="attack.0.copyAttackButton">&</span>
+            <button type="button" id="round.0.attack.0.copyAttackButton">
+                <span class="copy">&</span>
             </button>
-            <button type="button">
-                <span class="trash" id="attack.0.removeAttackButton">-</span>
+            <button type="button" id="round.0.attack.0.removeAttackButton">
+                <span class="trash">-</span>
             </button>
 
             <!-- hitChance -->
             <div>
-            <label for="attacks.0.hitChance" class="p-d-block">Min. to Hit</label>
-            <span id="attacks.0.hitChance">
+            <label for="round.0.attack.0.hitChance" class="p-d-block">Min. to Hit</label>
+            <span>
                 <input role="spinbutton"
                        class="p-inputtext p-component p-filled p-inputnumber-input"
                        type="text" inputmode="numeric"
-                       name="attacks.0.hitChance" min="2" max="20"
+                       id="round.0.attack.0.hitChance"
+                       name="round.0.attack.0.hitChance" min="2" max="20"
                        aria-valuemin="2" aria-valuemax="20"
                        aria-valuenow="8" value="8"/>
             </span>
@@ -42,12 +44,13 @@
 
             <!-- critRange -->
             <div>
-            <label for="attacks.0.critRange" class="p-d-block">Min. to Crit</label>
-            <span id="attacks.0.critRange">
+            <label for="round.0.attack.0.critRange" class="p-d-block">Min. to Crit</label>
+            <span>
                 <input role="spinbutton"
                        class="p-inputtext p-component p-filled p-inputnumber-input"
                        type="text" inputmode="numeric"
-                       name="attacks.0.critRange" min="2" max="20"
+                       id="round.0.attack.0.critRange"
+                       name="round.0.attack.0.critRange" min="2" max="20"
                        aria-valuemin="2" aria-valuemax="20"
                        aria-valuenow="20" value="20"/>
             </span>
@@ -58,10 +61,9 @@
             <div>
             <label>
                 Accuracy Type
-                <select name="attacks.0.hitChanceArrayIndex" tabindex="-1" aria-hidden="true">
-                    <option value=""></option>
+                <select id="round.0.attack.0.hitChanceArrayIndex" name="round.0.attack.0.hitChanceArrayIndex" tabindex="-1" aria-hidden="true">
                     <option value="0">Disadvantage</option>
-                    <option value="1">Standard</option>
+                    <option value="1" selected>Standard</option>
                     <option value="2">Advantage</option>
                     <option value="3">Elven Accuracy</option>
                 </select>
@@ -70,18 +72,19 @@
 
             <!-- halflingLucky -->
             <div>
-            <label class="p-d-block" for="attacks.0.halflingLucky">Halfling?</label>
-            <span id="attacks.0.halflingLucky"></span>
+            <label class="p-d-block" for="round.0.attack.0.halflingLucky">Halfling?</label>
+            <span id="round.0.attack.0.halflingLucky"></span>
                 </div>
 
             <!-- attacks multiplier -->
             <div>
-            <label for="attacks.0.multiplier" class="p-d-block">Attacks/Turn</label>
-                <span id="attacks.0.multiplier">
+            <label for="round.0.attack.0.multiplier" class="p-d-block">Attacks/Turn</label>
+                <span>
                     <input role="spinbutton"
+                           id="round.0.attack.0.multiplier"
                            class="p-inputtext p-component p-filled p-inputnumber-input"
                            type="text" inputmode="numeric"
-                           name="attacks.0.multiplier" min="1"
+                           name="round.0.attack.0.multiplier" min="1"
                            aria-valuemin="1" aria-valuenow="1" value="1">
                 </span>
             </div>
@@ -89,136 +92,69 @@
             <!-- damageOnHit -->
             <div>
             <label
-                    for="attacks.0.damageOnHit">Damage On Hit</label>
+                    for="round.0.attack.0.damageOnHit">Damage On Hit</label>
             <input
-                    name="attacks.0.damageOnHit" class="p-inputtext p-component p-filled"
-                    id="attacks.0.damageOnHit" value="12">
+                    name="round.0.attack.0.damageOnHit" class="p-inputtext p-component p-filled"
+                    id="round.0.attack.0.damageOnHit" value="12">
                 </div>
 
             <!--damageOnHit average -->
             <div><label class="p-d-block">Average</label>
-                <span id="attacks.0.damageOnHitAverage"></span>
+                <span id="round.0.attack.0.damageOnHitAverage"></span>
             </div>
 
             <!-- damageNotMultiplied -->
-            <div><label for="attacks.0.damageNotMultiplied">Additional Damage NOT multiplied Critical Hit</label>
+            <div><label for="round.0.attack.0.damageNotMultiplied">Additional Damage NOT multiplied Critical Hit</label>
                 <input
-                        name="attacks.0.damageNotMultiplied" class="p-inputtext p-component p-filled"
-                        id="attacks.0.damageNotMultiplied" value="2+2"></div>
+                        name="round.0.attack.0.damageNotMultiplied" class="p-inputtext p-component p-filled"
+                        id="round.0.attack.0.damageNotMultiplied" value="2+2"></div>
 
             <!-- damageNotMultiplied average -->
             <div><label class="p-d-block">Average</label>
-                <span id="attacks.0.damageNotMultipliedAverage"></span>
+                <span id="round.0.attack.0.damageNotMultipliedAverage"></span>
             </div>
 
             <!-- damageOnCritFlat -->
-            <div><label for="attacks.0.damageOnCritFlat">Damage Bonus on Crit (Not Multiplied)</label>
+            <div><label for="round.0.attack.0.damageOnCritFlat">Damage Bonus on Crit (Not Multiplied)</label>
             <input
-                    name="attacks.0.damageOnCritFlat" class="p-inputtext p-component"
-                    id="attacks.0.damageOnCritFlat" value=""></div>
+                    name="round.0.attack.0.damageOnCritFlat" class="p-inputtext p-component"
+                    id="round.0.attack.0.damageOnCritFlat" value=""></div>
 
             <!-- damageOnCritFlat average -->
             <div><label class="p-d-block">Average</label>
-            <span id="attacks.0.damageOnCritFlatAverage"></span>
+            <span id="round.0.attack.0.damageOnCritFlatAverage"></span>
             </div>
 
             <!-- damageOnCritMultiplied -->
-            <div><label for="attacks.0.damageOnCritMultiplied">Damage Bonus on Crit (Dice Multiplied)</label>
+            <div><label for="round.0.attack.0.damageOnCritMultiplied">Damage Bonus on Crit (Dice Multiplied)</label>
             <input
-                    name="attacks.0.damageOnCritMultiplied" class="p-inputtext p-component"
-                    id="attacks.0.damageOnCritMultiplied" value=""></div>
+                    name="round.0.attack.0.damageOnCritMultiplied" class="p-inputtext p-component"
+                    id="round.0.attack.0.damageOnCritMultiplied" value=""></div>
 
             <!-- damageOnCritMultiplied average -->
             <div><label class="p-d-block">Average</label>
-            <span id="attacks.0.damageOnCritMultipliedAverage"></span>
+            <span id="round.0.attack.0.damageOnCritMultipliedAverage"></span>
             </div>
 
             <!-- damageOnMiss -->
-            <div><label for="attacks.0.damageOnMiss">Damage Dealt on Miss</label>
+            <div><label for="round.0.attack.0.damageOnMiss">Damage Dealt on Miss</label>
             <input
-                    name="attacks.0.damageOnMiss" class="p-inputtext p-component"
-                    id="attacks.0.damageOnMiss" value=""></div>
+                    name="round.0.attack.0.damageOnMiss" class="p-inputtext p-component"
+                    id="round.0.attack.0.damageOnMiss" value=""></div>
 
             <!-- damageOnMiss average -->
             <div><label class="p-d-block">Average</label>
-            <span id="attacks.0.damageOnMissAverage"></span>
+            <span id="round.0.attack.0.damageOnMissAverage"></span>
             </div>
         </fieldset>
     </fieldset>
 </form>
+
 <div>
     <table id="outputDPR">
     </table>
 </div>
-
 <script src="index.js"></script>
-
-<button id="round.0.newRoundButton">+</button>
-<button id="round.0.removeRoundButton">-</button>
-
-<script type="module">
-    import createAttackForm from "./tempAttackForm.js";
-    import createRoundForm from "./tempRoundForm.js";
-    let attackForms = [];
-    let roundForms = [];
-
-    const dprForm = document.getElementById("dprForm");
-
-    setEventlisteners();
-    function setEventlisteners() {
-        const dprFieldset = document.getElementById("round." + roundForms.length);
-        const newAttackButton = document.getElementById("attack."+ attackForms.length +".newAttackButton");
-        const copyAttackButton = document.getElementById("attack."+ attackForms.length +".copyAttackButton");
-        const removeAttackButton = document.getElementById("attack."+ attackForms.length +".removeAttackButton");
-        const newRoundButton = document.getElementById("round."+ roundForms.length +".newRoundButton");
-
-        newAttackButton.addEventListener("click", function () {
-            // Wat als we hier de parent van de button ophalen?
-
-            // console.log(newAttackButton.closest("fieldset"));
-            let round = newAttackButton.closest("fieldset").parentElement.id;
-            console.log(round);
-
-            let attackFieldWrapper = document.createElement("div");
-            attackFieldWrapper.innerHTML = createAttackForm(attackForms.length + 1);
-            attackForms.push(attackFieldWrapper);
-            dprFieldset.appendChild(attackFieldWrapper);
-            setEventlisteners();
-        });
-
-        copyAttackButton.addEventListener("click", function () {
-            let clonedFieldset = dprFieldset.cloneNode(true);
-            //let attackFieldWrapper = document.createElement("div")
-            //attackFieldWrapper.innerHTML = createAttackForm(attackForms.length + 1);
-            attackForms.push(clonedFieldset);
-            dprFieldset.appendChild(clonedFieldset);
-            roundForms.push(attackForms);
-
-            setEventlisteners();
-        });
-
-        removeAttackButton.addEventListener("click", function () {
-            const attackForm = attackForms.slice(attackForms.length - 1)[0];
-            attackForm?.remove();
-        });
-
-        newRoundButton.addEventListener("click", function () {
-            let newAttackForms = [];
-
-            let roundFieldWrapper = document.createElement("div");
-            roundFieldWrapper.innerHTML = createRoundForm(roundForms.length + 1)
-
-            let attackFieldWrapper = document.createElement("div");
-            attackFieldWrapper.innerHTML = createAttackForm(newAttackForms.length);
-
-            dprForm.appendChild(roundFieldWrapper);
-            newAttackForms.push(attackFieldWrapper);
-            roundForms.push(newAttackForms);
-            document.getElementById("round." + roundForms.length)
-                .appendChild(attackFieldWrapper);
-
-        });
-    }
-</script>
+<script type="module" src="buttonListeners.js"></script>
 </body>
 </html>

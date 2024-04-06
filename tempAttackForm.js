@@ -1,29 +1,29 @@
-const a = function(attackCount) {
+const a = function(roundCount, attackCount = 0) {
+    const idPrefix = `round.${roundCount}.attack.${attackCount}`;
     return `
-        <fieldset class="p-fieldset p-component">
-            <div>
-                <legend class="p-fieldset-legend p-unselectable-text">
-                    <span class="p-fieldset-legend-text" id="pr_id_1_header">Attack #${attackCount + 1}</span>
-                </legend>
-            </div>
-            <button type="button">
-                <span class="plus" id="attack.${attackCount}.newAttackButton">+</span>
+        <fieldset id="${idPrefix}" class="p-fieldset p-component">
+            <legend class="p-fieldset-legend p-unselectable-text">
+                <span class="p-fieldset-legend-text" id="pr_id_1_header">Attack #${attackCount + 1}</span>
+            </legend>
+            <button type="button" id="${idPrefix}.newAttackButton">
+                <span class="plus">+</span>
             </button>
-            <button type="button">
-                <span class="copy" id="attack.${attackCount}.copyAttackButton">&</span>
+            <button type="button" id="${idPrefix}.copyAttackButton">
+                <span class="copy">&</span>
             </button>
-            <button type="button">
-                <span class="trash" id="attack.${attackCount}.removeAttackButton">-</span>
+            <button type="button" id="${idPrefix}.removeAttackButton">
+                <span class="trash">-</span>
             </button>
             
             <!-- hitChance -->
             <div>
-                <label for="attacks.${attackCount}.hitChance" class="p-d-block">Min. to Hit</label>
-                <span id="attacks.${attackCount}.hitChance">
+                <label for="${idPrefix}.hitChance" class="p-d-block">Min. to Hit</label>
+                <span>
                     <input role="spinbutton"
+                           id="${idPrefix}.hitChance"
                            class="p-inputtext p-component p-filled p-inputnumber-input"
                            type="text" inputmode="numeric"
-                           name="attacks.0.hitChance" min="2" max="20"
+                           name="${idPrefix}.hitChance" min="2" max="20"
                            aria-valuemin="2" aria-valuemax="20"
                            aria-valuenow="8" value="8"/>
                 </span>
@@ -31,12 +31,13 @@ const a = function(attackCount) {
         
             <!-- critRange -->
             <div>
-                <label for="attacks.${attackCount}.critRange" class="p-d-block">Min. to Crit</label>
-                <span id="attacks.${attackCount}.critRange">
+                <label for="${idPrefix}.critRange" class="p-d-block">Min. to Crit</label>
+                <span>
                     <input role="spinbutton"
+                           id="${idPrefix}.critRange"
                            class="p-inputtext p-component p-filled p-inputnumber-input"
                            type="text" inputmode="numeric"
-                           name="attacks.0.critRange" min="2" max="20"
+                           name="${idPrefix}.critRange" min="2" max="20"
                            aria-valuemin="2" aria-valuemax="20"
                            aria-valuenow="20" value="20"/>
                 </span>
@@ -46,10 +47,9 @@ const a = function(attackCount) {
             <div>
                 <label>
                     Accuracy Type
-                    <select name="attacks.${attackCount}.hitChanceArrayIndex" tabindex="-1" aria-hidden="true">
-                        <option value=""></option>
+                    <select id="${idPrefix}.hitChanceArrayIndex" name="${idPrefix}.hitChanceArrayIndex" tabindex="-1" aria-hidden="true">
                         <option value="0">Disadvantage</option>
-                        <option value="1">Standard</option>
+                        <option value="1" selected>Standard</option>
                         <option value="2">Advantage</option>
                         <option value="3">Elven Accuracy</option>
                     </select>
@@ -58,18 +58,19 @@ const a = function(attackCount) {
         
             <!-- halflingLucky -->
             <div>
-                <label class="p-d-block" for="attacks.${attackCount}.halflingLucky">Halfling?</label>
-                <span id="attacks.${attackCount}.halflingLucky"></span>
+                <label class="p-d-block" for="${idPrefix}.halflingLucky">Halfling?</label>
+                <span id="${idPrefix}.halflingLucky"></span>
             </div>
         
             <!-- attacks multiplier -->
             <div>
-                <label for="attacks.${attackCount}.multiplier" class="p-d-block">Attacks/Turn</label>
-                <span id="attacks.${attackCount}.multiplier">
+                <label for="${idPrefix}.multiplier" class="p-d-block">Attacks/Turn</label>
+                <span>
                     <input role="spinbutton"
+                           id="${idPrefix}.multiplier"
                            class="p-inputtext p-component p-filled p-inputnumber-input"
                            type="text" inputmode="numeric"
-                           name="attacks.${attackCount}.multiplier" min="1"
+                           name="${idPrefix}.multiplier" min="1"
                            aria-valuemin="1" aria-valuenow="1" value="1">
                 </span>
             </div>
@@ -77,72 +78,72 @@ const a = function(attackCount) {
             <!-- damageOnHit -->
             <div>
                 <label
-                        for="attacks.${attackCount}.damageOnHit">Damage On Hit</label>
+                        for="${idPrefix}.damageOnHit">Damage On Hit</label>
                 <input
-                        name="attacks.${attackCount}.damageOnHit" class="p-inputtext p-component p-filled"
-                        id="attacks.${attackCount}.damageOnHit" value="12">
+                        name="${idPrefix}.damageOnHit" class="p-inputtext p-component p-filled"
+                        id="${idPrefix}.damageOnHit" value="12">
             </div>
             
             <!--damageOnHit average -->
             <div>
                 <label class="p-d-block">Average</label>
-                <span id="attacks.${attackCount}.damageOnHitAverage"></span>
+                <span id="${idPrefix}.damageOnHitAverage"></span>
             </div>
         
             <!-- damageNotMultiplied -->
             <div>
-                <label for="attacks.${attackCount}.damageNotMultiplied">Additional Damage NOT multiplied Critical Hit</label>
+                <label for="${idPrefix}.damageNotMultiplied">Additional Damage NOT multiplied Critical Hit</label>
                 <input
-                        name="attacks.${attackCount}.damageNotMultiplied" class="p-inputtext p-component p-filled"
-                        id="attacks.${attackCount}.damageNotMultiplied" value="2+2">
+                        name="${idPrefix}.damageNotMultiplied" class="p-inputtext p-component p-filled"
+                        id="${idPrefix}.damageNotMultiplied" value="2+2">
             </div>
         
             <!-- damageNotMultiplied average -->
             <div>
                 <label class="p-d-block">Average</label>
-                <span id="attacks.${attackCount}.damageNotMultipliedAverage"></span>
+                <span id="${idPrefix}.damageNotMultipliedAverage"></span>
             </div>
         
             <!-- damageOnCritFlat -->
             <div>
-                <label for="attacks.${attackCount}.damageOnCritFlat">Damage Bonus on Crit (Not Multiplied)</label>
+                <label for="${idPrefix}.damageOnCritFlat">Damage Bonus on Crit (Not Multiplied)</label>
                 <input
-                        name="attacks.${attackCount}.damageOnCritFlat" class="p-inputtext p-component"
-                        id="attacks.${attackCount}.damageOnCritFlat" value="">
+                        name="${idPrefix}.damageOnCritFlat" class="p-inputtext p-component"
+                        id="${idPrefix}.damageOnCritFlat" value="">
             </div>
         
             <!-- damageOnCritFlat average -->
             <div>
                 <label class="p-d-block">Average</label>
-                <span id="attacks.${attackCount}.damageOnCritFlatAverage"></span>
+                <span id="${idPrefix}.damageOnCritFlatAverage"></span>
             </div>
         
             <!-- damageOnCritMultiplied -->
             <div>
-                <label for="attacks.${attackCount}.damageOnCritMultiplied">Damage Bonus on Crit (Dice Multiplied)</label>
+                <label for="${idPrefix}.damageOnCritMultiplied">Damage Bonus on Crit (Dice Multiplied)</label>
                 <input
-                        name="attacks.${attackCount}.damageOnCritMultiplied" class="p-inputtext p-component"
-                        id="attacks.${attackCount}.damageOnCritMultiplied" value="">
+                        name="${idPrefix}.damageOnCritMultiplied" class="p-inputtext p-component"
+                        id="${idPrefix}.damageOnCritMultiplied" value="">
             </div>
         
             <!-- damageOnCritMultiplied average -->
             <div>
                 <label class="p-d-block">Average</label>
-                <span id="attacks.${attackCount}.damageOnCritMultipliedAverage"></span>
+                <span id="${idPrefix}.damageOnCritMultipliedAverage"></span>
             </div>
         
             <!-- damageOnMiss -->
             <div>
-                <label for="attacks.${attackCount}.damageOnMiss">Damage Dealt on Miss</label>
+                <label for="${idPrefix}.damageOnMiss">Damage Dealt on Miss</label>
                 <input
-                        name="attacks.${attackCount}.damageOnMiss" class="p-inputtext p-component"
-                        id="attacks.${attackCount}.damageOnMiss" value="">
+                        name="${idPrefix}.damageOnMiss" class="p-inputtext p-component"
+                        id="${idPrefix}.damageOnMiss" value="">
             </div>
         
             <!-- damageOnMiss average -->
             <div>
                 <label class="p-d-block">Average</label>
-                <span id="attacks.${attackCount}.damageOnMissAverage"></span>
+                <span id="${idPrefix}.damageOnMissAverage"></span>
             </div>
         </fieldset>
     `;
