@@ -51,26 +51,26 @@ function setEventListenersForRound(roundId = 0) {
     }
 
     newRoundButton.addEventListener("click", function () {
-        try {
-            const {roundId} = matchRoundAndAttack(newRoundButton.id);
-            const attackFieldset = getRoundFieldset(roundId);
-            // createNewRoundFieldsetAndUpdateFields(attackFieldset, attackId + 1);
-            validateAttack();
-        } catch (e) {
-            console.error(e.message);
-        }
-        // const {roundId} = matchRoundAndAttack(newRoundButton.id);
-        // const roundFieldset = getRoundFieldset(roundId);
-        // const newRoundCount = roundId + 1;
-        //
-        // const newRoundFieldset = createElementFromHTMLString(createRoundForm(newRoundCount));
-        // const attackFieldset = createElementFromHTMLString(createAttackForm(newRoundCount));
-        //
-        // newRoundFieldset.appendChild(attackFieldset);
-        // dprForm.appendChild(newRoundFieldset);
-        // //Updaterounds
-        // setEventListenersForRound(newRoundCount);
-        // validateAttack();
+        // try {
+        //     const {roundId} = matchRoundAndAttack(newRoundButton.id);
+        //     const attackFieldset = getRoundFieldset(roundId);
+        //     // createNewRoundFieldsetAndUpdateFields(attackFieldset, attackId + 1);
+        //     validateAttack();
+        // } catch (e) {
+        //     console.error(e.message);
+        // }
+        const {roundId} = matchRoundAndAttack(newRoundButton.id);
+        const roundFieldset = getRoundFieldset(roundId);
+        const newRoundCount = roundId + 1;
+
+        const newRoundFieldset = createElementFromHTMLString(createRoundForm(newRoundCount));
+        const attackFieldset = createElementFromHTMLString(createAttackForm(newRoundCount));
+
+        newRoundFieldset.appendChild(attackFieldset);
+        dprForm.appendChild(newRoundFieldset);
+        //Updaterounds
+        setEventListenersForRound(newRoundCount);
+        validateAttack();
     });
 
     // removeRoundButton.addEventListener("click", function () {

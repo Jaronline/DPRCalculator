@@ -13,7 +13,7 @@
             <span>Round #1</span>
         </legend>
         <button type="button" id="round.0.newRoundButton">+</button>
-        <button type="button" id="round.0.removeRoundButton">-</button>
+        <button type="button" id="round.0.removeRoundButton" disabled>-</button>
         <fieldset class="p-fieldset p-component" id="round.0.attack.0">
             <legend>
                 <span>Attack #1</span>
@@ -38,7 +38,7 @@
                        id="round.0.attack.0.hitChance"
                        name="round.0.attack.0.hitChance" min="2" max="20"
                        aria-valuemin="2" aria-valuemax="20"
-                       aria-valuenow="8" value="8"/>
+                       aria-valuenow="8" value="8" disabled/>
             </span>
                 </div>
 
@@ -52,7 +52,7 @@
                        id="round.0.attack.0.critRange"
                        name="round.0.attack.0.critRange" min="2" max="20"
                        aria-valuemin="2" aria-valuemax="20"
-                       aria-valuenow="20" value="20"/>
+                       aria-valuenow="20" value="20" disabled/>
             </span>
                 </div>
 
@@ -65,14 +65,14 @@
                     <option value="0">Disadvantage</option>
                     <option value="1" selected>Standard</option>
                     <option value="2">Advantage</option>
-                    <option value="3">Elven Accuracy</option>
+                    <option value="3" disabled>Elven Accuracy</option>
                 </select>
             </label>
                 </div>
 
             <!-- halflingLucky -->
             <div>
-            <label class="p-d-block" for="round.0.attack.0.halflingLucky">Halfling?</label>
+            <label class="p-d-block" for="round.0.attack.0.halflingLucky">Halfling? (disabled)</label>
             <span id="round.0.attack.0.halflingLucky"></span>
                 </div>
 

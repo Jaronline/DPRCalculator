@@ -92,8 +92,8 @@ function genOutputDOM(rounds) {
         let totalDamagePerRound = 0.0;
 
         round.attacks.forEach((attack,aIndex)=> {
-            let averageDamagePerAttack = mul(attack.damageOnHitAverage??0,.65)+mul(attack.damageOnCritFlatAverage??0,.05)+mul(attack.damageOnCritMultipliedAverage??0,.05)
-                    +mul(attack.damageNotMultipliedAverage??0,.65)+mul(attack.damageOnMissAverage??0,.35);
+            let averageDamagePerAttack = mul(attack.damageOnHitAverage??0,getHitChanceFromIndex(attack.hitChanceArrayIndex,attack)[0])+mul(attack.damageOnCritFlatAverage??0,getHitChanceFromIndex(attack.hitChanceArrayIndex,attack)[1])+mul(attack.damageOnCritMultipliedAverage??0,getHitChanceFromIndex(attack.hitChanceArrayIndex,attack)[1])
+                    +mul(attack.damageNotMultipliedAverage??0,getHitChanceFromIndex(attack.hitChanceArrayIndex,attack)[0])+mul(attack.damageOnMissAverage??0,1-getHitChanceFromIndex(attack.hitChanceArrayIndex,attack)[0]);
 
             addToTable += `<tr><td></td><td>Attack #${aIndex+1}:</td><td>${averageDamagePerAttack.toFixed(2)}${attack.multiplier>1?" * "+attack.multiplier:""}</td></tr>`;
             totalDamagePerRound += averageDamagePerAttack * attack.multiplier;
@@ -147,3 +147,24 @@ function validateAttack() {
 //     gp = [1, 1, .99988, .99675, .98813, .974, .95438, .92925, .89253, .8625, .82088, .77375, .72113, .663, .59938, .53025, .45563, .3755, .28988, .19875, .10213, 0],
 //     fp = [1, 1, .99275, .891, .79475, .704, .61875, .539, .46475, .396, .33275, .275, .22275, .176, .13475, .099, .06875, .044, .02475, .011, .00275, 0],
 //     hp = [1, 1, .9975, .945, .8925, .84, .7875, .735, .6825, .63, .5775, .525, .4725, .42, .3675, .315, .2625, .21, .1575, .105, .0525, 0];
+
+
+// advantage = ()=>Math.pow(((21-(20*.65))/20),2)
+// disadvantage = ()=>Math.pow(((20*.65)/20),2)
+
+function getHitChanceFromIndex(index,attack){
+
+    let x = 20*.65;
+    let y = 20*.05;
+
+    switch ((index??1).toString()){
+        case "0":
+            return [Math.pow((x/20),2),Math.pow((y/20),2)];
+        case "2":
+            return [Math.pow(((21-x)/20),2),Math.pow(((21-y)/20),2)];
+        case "1":
+            return [(x/20),(y/20)];
+        // default:
+        //     return [x,y];
+    }
+}
