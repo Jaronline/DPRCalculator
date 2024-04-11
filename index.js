@@ -92,8 +92,10 @@ function genOutputDOM(rounds) {
         let totalDamagePerRound = 0.0;
 
         round.attacks.forEach((attack,aIndex)=> {
-            let averageDamagePerAttack = mul(attack.damageOnHitAverage??0,getHitChanceFromIndex(attack.hitChanceArrayIndex,attack)[0])+mul(attack.damageOnCritFlatAverage??0,getHitChanceFromIndex(attack.hitChanceArrayIndex,attack)[1])+mul(attack.damageOnCritMultipliedAverage??0,getHitChanceFromIndex(attack.hitChanceArrayIndex,attack)[1])
-                    +mul(attack.damageNotMultipliedAverage??0,getHitChanceFromIndex(attack.hitChanceArrayIndex,attack)[0])+mul(attack.damageOnMissAverage??0,1-getHitChanceFromIndex(attack.hitChanceArrayIndex,attack)[0]);
+            let chance = getHitChanceFromIndex(attack.hitChanceArrayIndex,attack);
+
+            let averageDamagePerAttack = mul(attack.damageOnHitAverage??0,chance.hit+chance.crit)+mul(attack.damageOnCritFlatAverage??0,chance.crit)+mul(attack.damageOnCritMultipliedAverage??0,chance.crit)
+                    +mul(attack.damageNotMultipliedAverage??0,chance.hit+chance.crit)+mul(attack.damageOnMissAverage??0,chance.miss);
 
             addToTable += `<tr><td></td><td>Attack #${aIndex+1}:</td><td>${averageDamagePerAttack.toFixed(2)}${attack.multiplier>1?" * "+attack.multiplier:""}</td></tr>`;
             totalDamagePerRound += averageDamagePerAttack * attack.multiplier;
@@ -109,10 +111,6 @@ function genOutputDOM(rounds) {
 }
 
 function validateAttack() {
-
-
-
-
     // find all rounds
     // per round find all attacks
     // per attack find all damages
@@ -153,18 +151,95 @@ function validateAttack() {
 // disadvantage = ()=>Math.pow(((20*.65)/20),2)
 
 function getHitChanceFromIndex(index,attack){
+    let d20 = 20.00;
 
-    let x = 20*.65;
-    let y = 20*.05;
+    // To calculate chance
+    // A:B
+    // where A has a 1 chance of succes in B.
+    //
+    // That means a 1 in 20 chance of succes for crits.
+    // out of 20 one will be a crit so ((20-19)+1)/20 which is 2/20 based on the need for 19 or 20 to crit.
+    //
+    // the hitChance is based on what you need to roll above to hit. so if the calculation is done it means there is a 8 out of 20 chance to miss.
+    // For a hit it would mean 12 out of 20
+    // so (20-8)/20 = 12/20
+
+    let hit = (d20-attack.hitChance)/d20;
+    let miss = (attack.hitChance)/d20;
+    let crit = ((d20-attack.critRange)+1)/d20;
+
+    /* DONE */
+    /*
+    let critAdv = (d=d20) => ((d20*2-1)-attack.critRange+d20)/Math.pow(d20,2);
+    console.log("critAdv: ",critAdv());
+
+    let critDis = (d=d20) => (d20-attack.critRange+2)/Math.pow(d20,2);
+    console.log("critDis: ",critDis());
+
+    let missAdv = (d=d20) => (((d20-(1*2))-attack.hitChance)+(d20*2))/Math.pow(d20,2);
+    console.log("missAdv: ",missAdv());
+
+    let missDis = (d=d20)=> ((Math.pow(d20,2)+(((d20*2)-(d20+attack.hitChance))))/Math.pow(d20,2));
+    console.log("missDis: ",missDis());
+
+    let hitDis = (d=d20) => (((((d20)+attack.hitChance)-(d20*2))/Math.pow(d20,2)));
+    console.log("hitDis: ",hitDis());
+
+     */
+
+
+    // let hitDis = (d=d20) => ((d20-attack.hitChance)+(d20*2))/Math.pow(d20,2);
+
+    // let missDis = (d=d20) => (((d20)+attack.hitChance)-(d20*2))/Math.pow(d20,2);
+    // let missDis = (d=d20) => ((d20*2-attack.hitChance)+(d20*2))/Math.pow(d20,2);
+    // missDis = (d=d20)=> 56/Math.pow(d20,2);
+
+    let hitDis = (d=d20) => (((((d20)+attack.hitChance)-(d20*2))/Math.pow(d20,2)));
+    let missDis = (d=d20)=> ((Math.pow(d20,2)+(((d20*2)-(d20+attack.hitChance))))/Math.pow(d20,2));
+
+    // console.log(":::: ",((Math.pow(d20,2)+(((d20*2)-(d20+attack.hitChance))))/Math.pow(d20,2)));
+
+    let critDis = (d=d20) => (d20-attack.critRange+2)/Math.pow(d20,2);
+    let critAdv = (d=d20) => ((d20*2-1)-attack.critRange+d20)/Math.pow(d20,2);
+    let missAdv = (d=d20) => ((d20-attack.hitChance)+(d20*2))/Math.pow(d20,2);
+
+
+
+
+
+
+    // let hitAdv = (d=d20) => ((d20*2)+((d20)-attack.hitChance))/Math.pow(d20,2);
+
+
+    // hitAdv is actually the miss formula but reversed so it isnt a A in B chance but a A+B
+    // let hitAdv = (d=d20) => {a=(((d20*2)-((d20*2)+attack.hitChance)));return a/(Math.pow(d20,2)-a)};
+    // let hitAdv = (d=d20) => ((d20*2)+((d20)-attack.hitChance))/Math.pow(d20,2);
+
+    // console.log("hit: ",hit.toFixed(4));
+    // console.log("miss: ",(miss-crit).toFixed(4));
+    // console.log("crit: ",crit.toFixed(4));
+    console.log("hitAdv: ",Math.pow(((20-hit)/20),2).toFixed(4));
+    console.log("missAdv: ",(missAdv()-critAdv()).toFixed(4));
+    console.log("critAdv: ",critAdv().toFixed(4));
+    // console.log("critDis: ",critDis().toFixed(4));
+    // console.log("missDis: ",missDis().toFixed(4));
+    // console.log("hitDis: ",hitDis().toFixed(4));
+
+    console.log("assert Sta: ", (hit+(miss-crit)+crit),(hit+(miss-crit)+crit)===1);
+    console.log("assert Dis: ", (hitDis()+(missDis()-critDis())+critDis()),(hitDis()+(missDis()-critDis())+critDis())===1);
+    console.log("assert Adv: ", (Math.pow(((d20-hit)/d20),2)+(missAdv()-critAdv())+critAdv()),(Math.pow(((d20-hit)/d20),2)+(missAdv()-critAdv())+critAdv())===1);
+
 
     switch ((index??1).toString()){
         case "0":
-            return [Math.pow((x/20),2),Math.pow((y/20),2)];
+            return {hit:hitDis(),
+                miss: (missDis()-critDis()),
+                crit: critDis()};
         case "2":
-            return [Math.pow(((21-x)/20),2),Math.pow(((21-y)/20),2)];
+            return {hit:Math.pow(((d20-hit)/d20),2),
+            miss: (missAdv()-critAdv()),
+            crit: critAdv()};
         case "1":
-            return [(x/20),(y/20)];
-        // default:
-        //     return [x,y];
+            return {hit:hit,miss:(miss-crit),crit:crit};
     }
 }
