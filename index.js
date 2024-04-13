@@ -24,6 +24,15 @@ function mul(a, b) {
     return a * b;
 }
 
+function round(a, b){
+    if(b>=1){
+        return Math.round(a * (10 ** b)) / (10 ** b);
+    }
+    else {
+        return Math.round(a);
+    }
+}
+
 function mapDOMToObject() {
     let a = Array.from(document.querySelectorAll("[id^='round']")).filter((e)=>e.id.split(".").length === 2);
     let c = [];
@@ -152,6 +161,76 @@ function validateAttack() {
 
 function getHitChanceFromIndex(index,attack){
     let d20 = 20.00;
+    let _2d20 = (d20*2);
+
+
+    attack.hitChance = 8;
+    attack.critRange = 20;
+
+    // crit
+    // standard
+    let a = (20-(attack.critRange-1))/20;
+    //advantage
+    //let b = ((attack.critRange-1/20)**2);
+    // let c = (1-b).toFixed(2)
+    // function testCritAdvantage(critRange) {
+    //     let b = 1-(((critRange-1)/20)**2);
+    //     console.log("results with critrange "+ critRange + " :",b);
+    // }
+    // let i = 1;
+    // while (i < 21) {
+    //     testCritAdvantage(i);
+    //     i++;
+    // }
+    //disadvantage
+    // let d = ((20*a)/20)**2;
+    // function testCritDisadvantage(critRange) {
+    //     let d = ((20*(20-(critRange-1))/20)/20)**2;
+    //     console.log("disadvantage test results with critrange "+ critRange + " :",d);
+    // }
+    // let i = 1;
+    // while (i < 21) {
+    //     testCritDisadvantage(i);
+    //         i++;
+    // }
+    console.log("a: ",a);
+    // console.log("c: ",c);
+    //console.log("d: ",d);
+
+
+
+
+    attack.hitChance = 8;
+    attack.critRange = 20;
+
+
+    // hit chance is miss chance == 8 - 20 = 12
+
+// hit
+   // let hitStandard = 1-(critStandard+missStandard);
+    let y = ((d20+(attack.critRange-attack.hitChance))/d20)**2/d20;
+    let z = ((((attack.critRange-attack.hitChance)/d20))/d20);
+   // console.log("hitStandard: ",hitStandard);
+    console.log("y: ",y);
+    console.log("z: ",z);
+
+
+    attack.hitChance = 10;
+    attack.critRange = 19;
+
+    let crit = ((20-(attack.critRange-1))/20);
+    console.log(crit);
+
+    // miss
+    let missStandard = ((attack.hitChance)/d20) - crit;
+    let missAdv = ((attack.hitChance)/d20);
+    let ef = (attack.hitChance)/d20;
+    console.log("missStandard: ",missStandard);
+    console.log("missAdvantage: ",missAdv);
+    console.log("ef: ",ef);
+
+
+
 
     // To calculate chance
     // A:B
@@ -164,51 +243,97 @@ function getHitChanceFromIndex(index,attack){
     // For a hit it would mean 12 out of 20
     // so (20-8)/20 = 12/20
 
-    let hit = (d20-attack.hitChance)/d20;
+
+    // ((21 - hitChance) / 20) * ((21 - hitChance) / 20)
+    // ((hitChance) / 20) * ((hitChance) / 20)
+
+
+
+
+
+
+    /////// OFFICIAL COMPLETE WORKING FOMRULA:: disadvantage hit chance is: let hitDisadvantage = ((21 - attack.hitChance) / 20) ** 2;
+    /////// OFFICIAL COMPLETE WORKING FORMULA:: advantage miss chance is: let missAdvantage = ((1 - attack.hitChance) / 20) ** 2;
+    /////// OFFICIAL COMPLETE WORKING FORMULA:: advantage crit chance is: let critAdvantage = 1-(((critRange-1)/20)**2);
+    /////// OFFICIAL COMPLETE WORKING FORMULA:: disadvantage crit chance is: let critDisadvantage = ((20*(20-(attack.critRange-1))/20)/20)**2;
+
+    let hitDisadvantage = (((20+1) - attack.hitChance) / 20) ** 2;
+    let missAdvantage = ((1 - attack.hitChance) / 20) ** 2;
+    let critAdvantage = 1-(((attack.critRange-1)/20)**2);
+    let critDisadvantage = ((20*(20-(attack.critRange-1))/20)/20)**2;
+    let critStandard = (20-(attack.critRange-1))/20;
+
+    // console.log("((21 - attack.hitChance) / 20)**2: ",(((20+1) - attack.hitChance) / 20) ** 2); // at hitChance == 9 this is 0.36 the disadvantage hit chance of hitChance 9 minus the crit at disadvantage with hitChance 9, at hitChance == 10 this is the disadvantage hit chance of hitChance 10 minus the crit at disadvantage with hitChance 10
+    // console.log("((1 - attack.hitChance) / 20)**2: ",((1 - attack.hitChance) / 20) ** 2); // at hitChance == 9 this is 0.16 the advantage miss chance of hitChance 9, at hitChance == 10 this is 0.2025 the advantage of miss chance of hitChance 10
+    // console.log("((1 - attack.critRange) / 20)**2: ",(((20 - attack.critRange)+1) / 20 ) ** 2); // at critRange == 11 this is 0.25 the disadvantage crit chance of critRange 11, at critRange == 20 this is 0.0025 the disadvantage crit chance of critRange 20
+
+
+    let hit = (attack.critRange-attack.hitChance)/d20;
     let miss = (attack.hitChance)/d20;
-    let crit = ((d20-attack.critRange)+1)/d20;
+
+    //hittest
+    function testHitStandard(hitChance, critRange) {
+
+        let critStandard = (20-(critRange-1))/20;
+        console.log(critStandard);
+        let missStandard = 1-((hitChance)/(d20) + critStandard) ;
+        console.log(missStandard);
+        let hitStandard = 1-((critStandard)+(missStandard));
+        console.log(hitStandard);
+        console.log("hitStandard test results with critrange "+ critRange + " and hitChance "+ hitChance + " :",hitStandard);
+    }
+    let j = 1;
+    while (j < 21) {
+        testHitStandard(j,19);
+        j++;
+    }
+    // let testHitAdv = (((d20-attack.hitChance)+(d20*2))/(d20**2));
+    // let testHitDis = (((d20**2)-(d20+attack.hitChance))/(d20**2));
+    // console.log("testHitAdv: ",testHitAdv.toFixed(4));
+    // console.log("testHitDis: ",testHitDis.toFixed(4));
 
     /* DONE */
     /*
     let critAdv = (d=d20) => ((d20*2-1)-attack.critRange+d20)/Math.pow(d20,2);
-    console.log("critAdv: ",critAdv());
+    critAdv = () => (2 - attack.critRange / d20) / d20;
+    // critAdv = () => ((((21)-crit)/20)**2);
+    console.log("critAdv: ",critAdv().toFixed(4));
 
     let critDis = (d=d20) => (d20-attack.critRange+2)/Math.pow(d20,2);
-    console.log("critDis: ",critDis());
+    critDis = () => (d20 - attack.critRange + 2) / (d20 * d20)
+    // critDis = () => ((((d20*1)-crit)/20)**2);
+    console.log("critDis: ",critDis().toFixed(4));
 
     let missAdv = (d=d20) => (((d20-(1*2))-attack.hitChance)+(d20*2))/Math.pow(d20,2);
-    console.log("missAdv: ",missAdv());
+    missAdv = () => ((d20 - 2) - attack.hitChance + (d20 * 2)) / (d20 * d20);
+    // missAdv = () => ((((21)+miss)/20)**2);
+    console.log("missAdv: ",missAdv().toFixed(4));
 
     let missDis = (d=d20)=> ((Math.pow(d20,2)+(((d20*2)-(d20+attack.hitChance))))/Math.pow(d20,2));
-    console.log("missDis: ",missDis());
+    missDis = () => (d20 + 2 - attack.hitChance) / d20;
+    // missDis = () => ((((d20*1)-miss)/20)**2);
+    console.log("missDis: ",missDis().toFixed(4));
 
     let hitDis = (d=d20) => (((((d20)+attack.hitChance)-(d20*2))/Math.pow(d20,2)));
-    console.log("hitDis: ",hitDis());
+    hitDis = () => (attack.hitChance / d20 - 1) / d20;
+    // hitDis = () => ((((d20*1)-hit)/20)**2);
+    console.log("hitDis: ",hitDis().toFixed(4));
+
+    let hitAdv = () => Math.pow((attack.hitChance / d20), 2);
+    // hitAdv = () => (((()+hit)/20)**2);
+    console.log("hitAdv: ",hitAdv().toFixed(4));
 
      */
 
-
-    // let hitDis = (d=d20) => ((d20-attack.hitChance)+(d20*2))/Math.pow(d20,2);
-
-    // let missDis = (d=d20) => (((d20)+attack.hitChance)-(d20*2))/Math.pow(d20,2);
-    // let missDis = (d=d20) => ((d20*2-attack.hitChance)+(d20*2))/Math.pow(d20,2);
-    // missDis = (d=d20)=> 56/Math.pow(d20,2);
-
-    let hitDis = (d=d20) => (((((d20)+attack.hitChance)-(d20*2))/Math.pow(d20,2)));
-    let missDis = (d=d20)=> ((Math.pow(d20,2)+(((d20*2)-(d20+attack.hitChance))))/Math.pow(d20,2));
-
-    // console.log(":::: ",((Math.pow(d20,2)+(((d20*2)-(d20+attack.hitChance))))/Math.pow(d20,2)));
-
-    let critDis = (d=d20) => (d20-attack.critRange+2)/Math.pow(d20,2);
     let critAdv = (d=d20) => ((d20*2-1)-attack.critRange+d20)/Math.pow(d20,2);
-    let missAdv = (d=d20) => ((d20-attack.hitChance)+(d20*2))/Math.pow(d20,2);
+    let missDis = (d=d20)=> (d20 + 2 - attack.hitChance) / d20;
 
-
-
-
-
-
-    // let hitAdv = (d=d20) => ((d20*2)+((d20)-attack.hitChance))/Math.pow(d20,2);
+    // let critAdv = () => {};
+    // let critDis = () => {};
+    // let missAdv = () => {};
+    // let missDis = () => {};
+    // let hitDis = () => {};
+    // let hitAdv = () => {};
 
 
     // hitAdv is actually the miss formula but reversed so it isnt a A in B chance but a A+B
@@ -218,28 +343,41 @@ function getHitChanceFromIndex(index,attack){
     // console.log("hit: ",hit.toFixed(4));
     // console.log("miss: ",(miss-crit).toFixed(4));
     // console.log("crit: ",crit.toFixed(4));
-    console.log("hitAdv: ",Math.pow(((20-hit)/20),2).toFixed(4));
-    console.log("missAdv: ",(missAdv()-critAdv()).toFixed(4));
-    console.log("critAdv: ",critAdv().toFixed(4));
+    // console.log("hitAdv: ",Math.pow(((20-hit)/20),2).toFixed(4));
+    // console.log("missAdv: ",(missAdv()-critAdv()).toFixed(4));
+    // console.log("critAdv: ",critAdv().toFixed(4));
     // console.log("critDis: ",critDis().toFixed(4));
     // console.log("missDis: ",missDis().toFixed(4));
     // console.log("hitDis: ",hitDis().toFixed(4));
 
     console.log("assert Sta: ", (hit+(miss-crit)+crit),(hit+(miss-crit)+crit)===1);
-    console.log("assert Dis: ", (hitDis()+(missDis()-critDis())+critDis()),(hitDis()+(missDis()-critDis())+critDis())===1);
-    console.log("assert Adv: ", (Math.pow(((d20-hit)/d20),2)+(missAdv()-critAdv())+critAdv()),(Math.pow(((d20-hit)/d20),2)+(missAdv()-critAdv())+critAdv())===1);
+    console.log("assert Dis: ", (hitDisadvantage+(missDis()-critDisadvantage)+critDisadvantage),(hitDisadvantage+(missDis()-critDisadvantage))+critDisadvantage===1);
+    console.log("assert Adv: ", (Math.pow(((d20-hit)/d20),2)+(missAdvantage-critAdvantage)+critAdvantage),(Math.pow(((d20-hit)/d20),2)+(missAdvantage-critAdvantage)+critAdvantage)===1);
 
 
     switch ((index??1).toString()){
         case "0":
-            return {hit:hitDis(),
-                miss: (missDis()-critDis()),
-                crit: critDis()};
+            return {hit:hitDisadvantage,
+                miss: (missDis()-critDisadvantage),
+                crit: critDisadvantage};
         case "2":
             return {hit:Math.pow(((d20-hit)/d20),2),
-            miss: (missAdv()-critAdv()),
-            crit: critAdv()};
+            miss: (missAdvantage-critAdvantage),
+            crit: critAdvantage};
         case "1":
             return {hit:hit,miss:(miss-crit),crit:crit};
     }
 }
+
+
+// A attack consists of:
+// - attack roll dice
+// - attack bonus
+// - damage roll dice
+// - damage bonus
+// - damage crit bonus dice
+// - damage crit bonus
+// - damage miss roll dice
+// - damage miss bonus
+//
+// - proficiency
