@@ -162,22 +162,67 @@ function validateAttack() {
 function getHitChanceFromIndex(index,attack){
     const d20 = 20.00;
 
-    attack.hitChance = 8;
-    attack.critRange = 20;
+    function critStandard(hitChance,critRange){
+        let d20 = 20.00;
 
-    const StandardHit = Math.round(((attack.critRange-attack.hitChance)/d20)*100)/100;
-    const StandardCrit = Math.round((((d20 - attack.critRange) + 1)/(d20 - (d20 - attack.critRange) + 1))*10000)/10000;
-    const StandardMiss = Math.round(((1 - ((attack.critRange-attack.hitChance)/d20)) - StandardCrit)*10000)/10000;
-    const DisadvantageHit = Math.round(((attack.critRange-attack.hitChance)/(d20**2))*100)/100;
-    console.log("StandardMiss XX: ",StandardMiss);
-    console.log("StandardCrit XX: ",StandardCrit);
-    console.log("StandardHit XX: ",StandardHit);
-    console.log("DisadvantageMiss: ",Math.round((Math.pow(((20*StandardMiss)/20),2))*10000)/10000);
-    console.log("DisadvantageCrit: ",Math.round((Math.pow(((20*StandardCrit)/20),2))*10000)/10000);
-    console.log("DisadvantageHit: ",Math.round(((attack.critRange-attack.hitChance)/(d20**2))*100)/100);
-    console.log("AdvantageMiss: ",Math.round((Math.pow(((21-(20*StandardMiss))/20),2))*10000)/10000);
-    console.log("AdvantageCrit: ",Math.round((Math.pow((((d20+((d20 - attack.critRange) + 1))-(StandardCrit))/d20),2)-1)*10000)/10000);
-    console.log("AdvantageHit: ",Math.round((Math.pow(((21-(20*StandardHit))/20),2))*10000)/10000);
+        const r = Math.round(((d20-(critRange-1))/d20)*100)/100;
+        return r>0?r:0;
+    }
+
+    function hitStandard(hitChance,critRange){
+        let d20 = 20.00;
+
+        const r = Math.round((Math.round(((d20-hitChance+1)/d20)*100)/100-critStandard(hitChance,critRange))*100)/100
+        return r>0?r:0;
+    }
+
+    function missStandard(hitChance,critRange){
+        let d20 = 20.00;
+
+        const r = Math.round((1-hitStandard(hitChance,critRange)-critStandard(hitChance,critRange))*100)/100;
+        return r>0?r:0;
+    }
+
+    function critDisadvantage(hitChance,critRange){
+        let d20 = 20.00;
+
+        const r = Math.round((((d20-(critRange-1))**2)/(d20**2))*10000)/10000;
+        return r>0?r:0;
+    }
+
+    function hitDisadvantage(hitChance,critRange){
+        let d20 = 20.00;
+
+        const r = Math.round(((Math.round((((d20-hitChance+1)**2)/(d20**2))*10000)/10000)-critDisadvantage(hitChance,critRange))*10000)/10000;
+        return r>0?r:0;
+    }
+
+    function missDisadvantage(hitChance,critRange){
+        let d20 = 20.00;
+
+        const r = Math.round((1-hitDisadvantage(hitChance,critRange)-critDisadvantage(hitChance,critRange))*10000)/10000;
+        return r>0?r:0;
+    }
+
+
+
+
+    // attack.hitChance = 8;
+    // attack.critRange = 20;
+
+    // const StandardHit = Math.round(((attack.critRange-attack.hitChance)/d20)*100)/100;
+    // const StandardCrit = Math.round((((d20 - attack.critRange) + 1)/(d20 - (d20 - attack.critRange) + 1))*10000)/10000;
+    // const StandardMiss = Math.round(((1 - ((attack.critRange-attack.hitChance)/d20)) - StandardCrit)*10000)/10000;
+    // const DisadvantageHit = Math.round(((attack.critRange-attack.hitChance)/(d20**2))*100)/100;
+    // console.log("StandardMiss XX: ",StandardMiss);
+    // console.log("StandardCrit XX: ",StandardCrit);
+    // console.log("StandardHit XX: ",StandardHit);
+    // console.log("DisadvantageMiss: ",Math.round((Math.pow(((20*StandardMiss)/20),2))*10000)/10000);
+    // console.log("DisadvantageCrit: ",Math.round((Math.pow(((20*StandardCrit)/20),2))*10000)/10000);
+    // console.log("DisadvantageHit: ",Math.round(((attack.critRange-attack.hitChance)/(d20**2))*100)/100);
+    // console.log("AdvantageMiss: ",Math.round((Math.pow(((21-(20*StandardMiss))/20),2))*10000)/10000);
+    // console.log("AdvantageCrit: ",Math.round((Math.pow((((d20+((d20 - attack.critRange) + 1))-(StandardCrit))/d20),2)-1)*10000)/10000);
+    // console.log("AdvantageHit: ",Math.round((Math.pow(((21-(20*StandardHit))/20),2))*10000)/10000);
 
 
     /////// OFFICIAL COMPLETE WORKING FOMRULA:: disadvantage hit chance is: let hitDisadvantage = ((21 - attack.hitChance) / 20) ** 2;
@@ -185,31 +230,31 @@ function getHitChanceFromIndex(index,attack){
     /////// OFFICIAL COMPLETE WORKING FORMULA:: advantage crit chance is: let critAdvantage = 1-(((critRange-1)/20)**2);
     /////// OFFICIAL COMPLETE WORKING FORMULA:: disadvantage crit chance is: let critDisadvantage = ((20*(20-(attack.critRange-1))/20)/20)**2;
 
-    let hitDisadvantage = (((20+1) - attack.hitChance) / 20) ** 2;
-    let missAdvantage = ((1 - attack.hitChance) / 20) ** 2;
-    let critAdvantage = 1-(((attack.critRange-1)/20)**2);
-    let critDisadvantage = ((20*(20-(attack.critRange-1))/20)/20)**2;
-    let critStandard = (20-(attack.critRange-1))/20;
+    // let hitDisadvantage = (((20+1) - attack.hitChance) / 20) ** 2;
+    // let missAdvantage = ((1 - attack.hitChance) / 20) ** 2;
+    // let critAdvantage = 1-(((attack.critRange-1)/20)**2);
+    // let critDisadvantage = ((20*(20-(attack.critRange-1))/20)/20)**2;
+    // let critStandard = (20-(attack.critRange-1))/20;
 
     // console.log("((21 - attack.hitChance) / 20)**2: ",(((20+1) - attack.hitChance) / 20) ** 2); // at hitChance == 9 this is 0.36 the disadvantage hit chance of hitChance 9 minus the crit at disadvantage with hitChance 9, at hitChance == 10 this is the disadvantage hit chance of hitChance 10 minus the crit at disadvantage with hitChance 10
     // console.log("((1 - attack.hitChance) / 20)**2: ",((1 - attack.hitChance) / 20) ** 2); // at hitChance == 9 this is 0.16 the advantage miss chance of hitChance 9, at hitChance == 10 this is 0.2025 the advantage of miss chance of hitChance 10
     // console.log("((1 - attack.critRange) / 20)**2: ",(((20 - attack.critRange)+1) / 20 ) ** 2); // at critRange == 11 this is 0.25 the disadvantage crit chance of critRange 11, at critRange == 20 this is 0.0025 the disadvantage crit chance of critRange 20
 
-    function testHitStandard(hitChance, critRange) {
-
-        let critStandard = (20-(critRange-1))/20;
-        console.log(critStandard);
-        let missStandard = 1-((hitChance)/(d20) + critStandard) ;
-        console.log(missStandard);
-        let hitStandard = 1-((critStandard)+(missStandard));
-        console.log(hitStandard);
-        console.log("hitStandard test results with critrange "+ critRange + " and hitChance "+ hitChance + " :",hitStandard);
-    }
-    let j = 1;
-    while (j < 21) {
-        testHitStandard(j,19);
-        j++;
-    }
+    // function testHitStandard(hitChance, critRange) {
+    //
+    //     let critStandard = (20-(critRange-1))/20;
+    //     console.log(critStandard);
+    //     let missStandard = 1-((hitChance)/(d20) + critStandard) ;
+    //     console.log(missStandard);
+    //     let hitStandard = 1-((critStandard)+(missStandard));
+    //     console.log(hitStandard);
+    //     console.log("hitStandard test results with critrange "+ critRange + " and hitChance "+ hitChance + " :",hitStandard);
+    // }
+    // let j = 1;
+    // while (j < 21) {
+    //     testHitStandard(j,19);
+    //     j++;
+    // }
 
     /* DONE */
     /*
@@ -244,8 +289,8 @@ function getHitChanceFromIndex(index,attack){
 
      */
 
-    let critAdv = (d=d20) => ((d20*2-1)-attack.critRange+d20)/Math.pow(d20,2);
-    let missDis = (d=d20)=> (d20 + 2 - attack.hitChance) / d20;
+    // let critAdv = (d=d20) => ((d20*2-1)-attack.critRange+d20)/Math.pow(d20,2);
+    // let missDis = (d=d20)=> (d20 + 2 - attack.hitChance) / d20;
 
     // let critAdv = () => {};
     // let critDis = () => {};
@@ -269,22 +314,22 @@ function getHitChanceFromIndex(index,attack){
     // console.log("missDis: ",missDis().toFixed(4));
     // console.log("hitDis: ",hitDis().toFixed(4));
 
-    console.log("assert Sta: ", (StandardHit+StandardMiss+StandardCrit),(StandardHit+StandardMiss+StandardCrit)===1);
-    console.log("assert Dis: ", (hitDisadvantage+missDis()+critAdvantage),(hitDisadvantage+missDis())+critAdvantage===1);
-    console.log("assert Adv: ", (Math.pow(((d20-StandardHit)/d20),2)+missAdvantage+critAdvantage),(Math.pow(((d20-StandardHit)/d20),2)+missAdvantage+critAdvantage)===1);
+    // console.log("assert Sta: ", (StandardHit+StandardMiss+StandardCrit),(StandardHit+StandardMiss+StandardCrit)===1);
+    // console.log("assert Dis: ", (hitDisadvantage+missDis()+critAdvantage),(hitDisadvantage+missDis())+critAdvantage===1);
+    // console.log("assert Adv: ", (Math.pow(((d20-StandardHit)/d20),2)+missAdvantage+critAdvantage),(Math.pow(((d20-StandardHit)/d20),2)+missAdvantage+critAdvantage)===1);
 
 
     switch ((index??1).toString()){
         case "0":
-            return {hit:hitDisadvantage,
-                miss: missDis(),
-                crit: critAdvantage};
+            return {hit:hitDisadvantage(attack.hitChance,attack.critRange),
+                miss: missDisadvantage(attack.hitChance,attack.critRange),
+                crit: critDisadvantage(attack.hitChance,attack.critRange)};
         case "2":
             return {hit:Math.pow(((d20-StandardHit)/d20),2),
             miss: missAdvantage,
             crit: critAdvantage};
         case "1":
-            return {hit:StandardHit,miss:StandardMiss,crit:StandardCrit};
+            return {hit:hitStandard(attack.hitChance,attack.critRange),miss:missStandard(attack.hitChance,attack.critRange),crit:critStandard(attack.hitChance,attack.critRange)};
     }
 }
 
@@ -303,14 +348,14 @@ function getHitChanceFromIndex(index,attack){
 
 
 
-export function critStandard(hitChance,critRange){
-    return Math.round((((d20 - attack.critRange) + 1)/(d20 - (d20 - attack.critRange) + 1))*10000)/10000;
-}
-
-export function hitStandard(hitChance,critRange){
-    return Math.round(((attack.critRange-attack.hitChance)/d20)*100)/100;
-}
-
-export function missStandard(hitChance,critRange){
-    return 1-hitStandard(hitChance,critRange);
-}
+// export function critStandard(hitChance,critRange){
+//     return Math.round((((d20 - attack.critRange) + 1)/(d20 - (d20 - attack.critRange) + 1))*10000)/10000;
+// }
+//
+// export function hitStandard(hitChance,critRange){
+//     return Math.round(((attack.critRange-attack.hitChance)/d20)*100)/100;
+// }
+//
+// export function missStandard(hitChance,critRange){
+//     return 1-hitStandard(hitChance,critRange);
+// }
