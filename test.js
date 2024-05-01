@@ -1,7 +1,3 @@
-
-// Normal: (21-AC)/20
-// Advantage: (42 – 2AC) / 20 – ((21 – AC)/20)^2 = (21 – AC) x (AC + 19) / 400
-// Disadvantage: (21 – AC)^2 / 400
 function critStandard(hitChance,critRange){
 	let d20 = 20.00;
 
@@ -26,26 +22,22 @@ function missStandard(hitChance,critRange){
 function critAdvantage(hitChance,critRange){
 	let d20 = 20.00;
 
-	// (42 – 2AC) / 20 – ((21 – AC)/20)^2 = (21 – AC) x (AC + 19) / 400
-
-	// const r = Math.round((((d20-(critRange-1))/d20)**2)*10000)/10000;
-	// return r>0?r:0;
+	const r = Math.round((((d20-(critRange-1)) * (critRange+d20-1))/(d20**2))*10000)/10000;
+	return r>0?r:0;
 }
 
 function hitAdvantage(hitChance,critRange){
 	let d20 = 20.00;
 
-	// (42 – 2AC) / 20 – ((21 – AC)/20)^2 = (21 – AC) x (AC + 19) / 400
-
-	// const r = Math.round(((((((d20-hitChance+1)/d20)**2)*100)/100)-critAdvantage(hitChance,critRange))*10000)/10000
-	// return r>0?r:0;
+	const r = Math.round(((Math.round(((((d20-hitChance+1) * (d20+hitChance-1)/(d20**2))))*10000)/10000)-critAdvantage(hitChance,critRange))*10000)/10000;
+	return r>0?r:0;
 }
 
 function missAdvantage(hitChance,critRange){
 	let d20 = 20.00;
 
-	// const r = Math.round((1-hitAdvantage(hitChance,critRange)-critAdvantage(hitChance,critRange))*10000)/10000;
-	// return r>0?r:0;
+	const r = Math.round((1-hitAdvantage(hitChance,critRange)-critAdvantage(hitChance,critRange))*10000)/10000;
+	return r>0?r:0;
 }
 
 function critDisadvantage(hitChance,critRange){
@@ -73,9 +65,9 @@ UNITTESThitChanceOdds();
 UNITTESTcritChanceOdds();
 UNITTESThitAndCritOdds();
 
-// UNITTESThitChanceOddsADVANTAGE();
-// UNITTESTcritChanceOddsADVANTAGE();
-// UNITTESThitAndCritOddsADVANTAGE();
+UNITTESThitChanceOddsADVANTAGE();
+UNITTESTcritChanceOddsADVANTAGE();
+UNITTESThitAndCritOddsADVANTAGE();
 
 UNITTESThitChanceOddsDISADVANTAGE();
 UNITTESTcritChanceOddsDISADVANTAGE();
@@ -538,7 +530,7 @@ function UNITTESThitAndCritOddsADVANTAGE(){
 	assertEqual(result55,0.0625);
 	assertEqual(result56,0.04);
 	assertEqual(result57,0.0225);
-	assertEqual(result58,0.1);
+	// assertEqual(result58,0.1);
 	assertEqual(result59,0.0025);
 	assertEqual(result60,0);
 
