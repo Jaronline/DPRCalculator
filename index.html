@@ -14,6 +14,19 @@
         </legend>
         <button type="button" id="round.0.newRoundButton">+</button>
         <button type="button" id="round.0.removeRoundButton" disabled>-</button>
+
+        <!-- lastRound -->
+        <div>
+            <label for="round.0.lastRound" class="p-d-block">Last Round? (Increased simulation accuracy)</label>
+            <span>
+                        <input role="checkbox"
+                               id="round.0.lastRound"
+                               class="p-checkbox p-component"
+                               type="checkbox"
+                               name="round.0.lastRound" title="Is this round repeatable till the end of the battle? (if you havent already gotten 10 rounds this will be repeated to fill up to 10 rounds)">
+                  </span>
+        </div>
+
         <fieldset class="p-fieldset p-component" id="round.0.attack.0">
             <legend>
                 <span>Attack #1</span>
@@ -64,7 +77,7 @@
                 <select id="round.0.attack.0.hitChanceArrayIndex" name="round.0.attack.0.hitChanceArrayIndex" tabindex="-1" aria-hidden="true">
                     <option value="0">Disadvantage</option>
                     <option value="1" selected>Standard</option>
-                    <option value="2" disabled>Advantage</option>
+                    <option value="2">Advantage</option>
                     <option value="3" disabled>Elven Accuracy</option>
                 </select>
             </label>
