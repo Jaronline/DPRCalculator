@@ -67,7 +67,22 @@
                        aria-valuemin="2" aria-valuemax="20"
                        aria-valuenow="20" value="20"/>
             </span>
+
                 </div>
+            <div>
+                <span>
+                <label for="round.0.attack.0.missChangePercentage" class="p-d-block">Miss % Chance</label>
+                <span id="round.0.attack.0.missChangePercentage"></span>
+                    </span>
+                <span>
+                <label for="round.0.attack.0.hitChangePercentage" class="p-d-block">Hit % Chance</label>
+                <span id="round.0.attack.0.hitChangePercentage"></span>
+                    </span>
+                <span>
+                <label for="round.0.attack.0.critChangePercentage" class="p-d-block">Crit % Chance</label>
+                <span id="round.0.attack.0.critChangePercentage"></span>
+                    </span>
+            </div>
 
 
             <!-- hitChanceArrayIndex -->
@@ -78,15 +93,15 @@
                     <option value="0">Disadvantage</option>
                     <option value="1" selected>Standard</option>
                     <option value="2">Advantage</option>
-                    <option value="3" disabled>Elven Accuracy</option>
+                    <option value="3">Elven Accuracy</option>
                 </select>
             </label>
                 </div>
 
             <!-- halflingLucky -->
             <div>
-            <label class="p-d-block" for="round.0.attack.0.halflingLucky">Halfling? (disabled)</label>
-            <span id="round.0.attack.0.halflingLucky"></span>
+            <label class="p-d-block" for="round.0.attack.0.halflingLucky">Halfling?</label>
+            <input id="round.0.attack.0.halflingLucky" type="checkbox">
                 </div>
 
             <!-- attacks multiplier -->
@@ -169,5 +184,15 @@
 </div>
 <script src="index.js"></script>
 <script type="module" src="buttonListeners.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+       document.addEventListener('change', (event) => {
+            if (event.target.id.includes("round.") && (event.target.id.includes(".attack.") || event.target.id.includes(".lastRound"))) {
+                // Call the function to update the output table
+                validateAttack();
+            }
+        });
+    });
+</script>
 </body>
 </html>

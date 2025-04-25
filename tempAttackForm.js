@@ -42,6 +42,21 @@ const a = function(roundCount, attackCount = 0) {
                            aria-valuenow="20" value="20"/>
                 </span>
             </div>
+            
+            <div>
+                <span>
+                <label for="${idPrefix}.missChangePercentage" class="p-d-block">Miss % Chance</label>
+                <span id="${idPrefix}.missChangePercentage"></span>
+                    </span>
+                <span>
+                <label for="${idPrefix}.hitChangePercentage" class="p-d-block">Hit % Chance</label>
+                <span id="${idPrefix}.hitChangePercentage"></span>
+                    </span>
+                <span>
+                <label for="${idPrefix}.critChangePercentage" class="p-d-block">Crit % Chance</label>
+                <span id="${idPrefix}.critChangePercentage"></span>
+                    </span>
+            </div>
         
             <!-- hitChanceArrayIndex -->
             <div>
@@ -58,8 +73,8 @@ const a = function(roundCount, attackCount = 0) {
         
             <!-- halflingLucky -->
             <div>
-                <label class="p-d-block" for="${idPrefix}.halflingLucky">Halfling?</label>
-                <span id="${idPrefix}.halflingLucky"></span>
+            <label class="p-d-block" for="${idPrefix}.halflingLucky">Halfling?</label>
+            <input id="${idPrefix}.halflingLucky" name="${idPrefix}.halflingLucky" type="checkbox">
             </div>
         
             <!-- attacks multiplier -->
@@ -81,7 +96,7 @@ const a = function(roundCount, attackCount = 0) {
                         for="${idPrefix}.damageOnHit">Damage On Hit</label>
                 <input
                         name="${idPrefix}.damageOnHit" class="p-inputtext p-component p-filled"
-                        id="${idPrefix}.damageOnHit" value="12">
+                        id="${idPrefix}.damageOnHit" value="">
             </div>
             
             <!--damageOnHit average -->
@@ -95,7 +110,7 @@ const a = function(roundCount, attackCount = 0) {
                 <label for="${idPrefix}.damageNotMultiplied">Additional Damage NOT multiplied Critical Hit</label>
                 <input
                         name="${idPrefix}.damageNotMultiplied" class="p-inputtext p-component p-filled"
-                        id="${idPrefix}.damageNotMultiplied" value="2+2">
+                        id="${idPrefix}.damageNotMultiplied" value="">
             </div>
         
             <!-- damageNotMultiplied average -->

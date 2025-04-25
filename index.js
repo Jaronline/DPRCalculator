@@ -1,5 +1,20 @@
 validateAttack();
 
+// TODO:
+// - Halfling Lucky
+// - Once/Turn Damage Boost Bonus On Hit
+// - Once/Turn Damage Boost Bonus On Hit (Not Multiplied on Crit)
+// - Reroll option for attacks
+// - Reroll option for damage
+
+// if using the Calculator for (save DC):
+// INT saves: 71.0% failure rate [INCREASE hit chance by 1/20]
+// DEX saves: 64.2% [REDUCE hit chance by 0]
+// CHA saves: 61.8% [REDUCE hit chance by 1/20]
+// STR saves: 61.7% [REDUCE hit chance by 1/20]
+// WIS saves: 55.6% [REDUCE hit chance by 2/20]
+// CON saves: 54.1% [REDUCE hit chance by 2/20]
+
 function avg(...e) {
     return div(e.reduce(add, 0),e.length);
 }
@@ -9,7 +24,21 @@ function div(a, b) {
 }
 
 function total(a) {
-    return eval(a);
+    try {
+        if (Array.isArray(a))
+        {
+            return a.reduce((acc, value) => add(acc,value), 0)
+        }
+        else if (!Number.isSafeInteger(a))
+        {
+            return new Function('return ' + a)();  // Safer alternative to eval
+        }
+        return Number(a)
+        
+      } catch (error) {
+        console.error("Invalid expression:", a);
+        return 0;  // Return 0 if there's an invalid expression
+      }
 }
 
 function add(a, b) {
@@ -26,12 +55,13 @@ function mul(a, b) {
 
 function round(a, b){
     if(b>=1){
-        return Math.round(a * (10 ** b)) / (10 ** b);
+        return Math.round((Math.round(((a * (10** (b+1))) * 2)) / (10 ** (b+1)) / 2) * (10** b)) / (10** b)
     }
     else {
         return Math.round(a);
     }
 }
+
 
 function mapDOMToObject() {
     let a = Array.from(document.querySelectorAll("[id^='round']")).filter((e)=>e.id.split(".").length === 2);
@@ -64,7 +94,7 @@ function mapDOMToObject() {
                     damageOnCritMultiplied: damageOnCritMultiplied?.value??undefined,
                     damageOnHit: damageOnHit?.value??undefined,
                     damageOnMiss: damageOnMiss?.value??undefined,
-                    halflingLucky: !halflingLucky?.value??undefined,
+                    halflingLucky: halflingLucky?.checked??false,
                     hitChance: hitChance?.value??undefined,
                     hitChanceArrayIndex: hitChanceArrayIndex?.value??undefined,
                     multiplier: multiplier?.value??undefined,
@@ -95,7 +125,6 @@ function mapObjectToDOM(rounds) {
 function genOutputDOM(rounds) {
     let addToTable = "";
 
-    let averageDPR = 0.0;
     let totalDPR = 0.0;
     rounds.forEach((round,rIndex)=>{
         if(!round.simulated) {
@@ -106,8 +135,12 @@ function genOutputDOM(rounds) {
         round.attacks.forEach((attack,aIndex)=> {
             let chance = getHitChanceFromIndex(attack.hitChanceArrayIndex,attack);
 
-            let averageDamagePerAttack = mul(attack.damageOnHitAverage??0,chance.hit+chance.crit)+mul(attack.damageOnCritFlatAverage??0,chance.crit)+mul(attack.damageOnCritMultipliedAverage??0,chance.crit)
-                    +mul(attack.damageNotMultipliedAverage??0,chance.hit+chance.crit)+mul(attack.damageOnMissAverage??0,chance.miss);
+            let averageDamagePerAttack = 
+                mul(attack.damageOnHitAverage ?? 0, (chance.hit + chance.crit)) +        // Damage for normal hits and crits
+                mul(attack.damageOnCritFlatAverage ?? 0, chance.crit) +                  // Additional flat damage from crit
+                mul(attack.damageOnCritMultipliedAverage ?? 0, chance.crit) +           // Multiplied damage from crit
+                mul(attack.damageNotMultipliedAverage ?? 0, (chance.hit + chance.crit)) + // Damage that is not multiplied (like modifier damage)
+                mul(attack.damageOnMissAverage ?? 0, chance.miss);                      // Damage on miss
 
             if(!round.simulated) {
                 addToTable += `<tr><td></td><td>Attack #${aIndex + 1}:</td><td>${averageDamagePerAttack.toFixed(2)}${attack.multiplier > 1 ? " * " + attack.multiplier : ""}</td></tr>`;
@@ -119,9 +152,10 @@ function genOutputDOM(rounds) {
         }
         totalDPR += totalDamagePerRound;
     })
-    averageDPR = div(totalDPR,rounds.length);
+    let averageDPR = div(totalDPR,rounds.length)??0.0;
 
     addToTable += `<tr><td>Damage Per Round:</td><td></td><td>${averageDPR.toFixed(2)}</td></tr>`;
+    addToTable += `<tr><td>Total Combat Damage:</td><td></td><td>${totalDPR.toFixed(2)}</td></tr>`;
 
     document.querySelector("table[id='outputDPR']").innerHTML = addToTable;
 }
@@ -134,9 +168,14 @@ function validateAttack() {
     let roundsObj = mapDOMToObject();
 
     // calculate average damage per attack
-    roundsObj.map((round) => ({
+    roundsObj.map((r) => ({
         attacks:
-            round.attacks.map((attack) => {
+            r.attacks.map((attack) => {
+                let chance = getHitChanceFromIndex(attack.hitChanceArrayIndex,attack);
+
+                attack.missChangePercentage = round((chance.miss * 100),2)??undefined;
+                attack.hitChangePercentage = round((chance.hit * 100),2)??undefined;
+                attack.critChangePercentage = round((chance.crit * 100),2)??undefined;
                 attack.damageOnHitAverage = total(attack.damageOnHit);
                 attack.damageNotMultipliedAverage = total(attack.damageNotMultiplied);
                 attack.damageOnCritFlatAverage = total(attack.damageOnCritFlat);
@@ -166,82 +205,92 @@ function validateAttack() {
 }
 
 function getHitChanceFromIndex(index,attack){
-    const d20 = 20.00;
+    const d20 = 20.0
 
-    function critStandard(hitChance,critRange){
-        let d20 = 20.00;
+    const P = (threshold, total = d20, dice = 1) =>
+        ((total - threshold + 1) / total) ** Math.max(dice, 1);
 
-        const r = Math.round(((d20-(critRange-1))/d20)*100)/100;
-        return r>0?r:0;
-    }
+    const pAny = (threshold, total = d20, dice = 1) =>
+        1 - ((threshold - 1) / total) ** Math.max(dice, 1);
 
-    function hitStandard(hitChance,critRange){
-        let d20 = 20.00;
+    const pReroll = (
+        baseProb,
+        isFailure = false,
+        dice = 1,
+        threshold = 1,
+        total = d20
+    ) => {
+        const rerollChance = threshold / total;  // chance of rerolling per dice
+        const attempts = Math.max(1,dice);  // at least one reroll
+        const pFailure = 1 - baseProb;  // probability of failure on each dice roll
+        const pRerollFailure = pFailure ** attempts;
+        const pRerollSucceeds = 1 - pRerollFailure;  // cumulative probability of at least one success
 
-        const r = Math.round((Math.round(((d20-hitChance+1)/d20)*100)/100-critStandard(hitChance,critRange))*100)/100
-        return r>0?r:0;
-    }
+        let adjustedProb;
 
-    function missStandard(hitChance,critRange){
-        let d20 = 20.00;
+        if (isFailure) {
+            // If we're dealing with failures, we calculate how much the rerolls reduce the failure rate
+            const failuresSaved = pFailure * rerollChance * pRerollSucceeds;
+            adjustedProb = baseProb - failuresSaved;
+        } else {
+            // If we're dealing with successes, we calculate how much rerolls increase the success rate
+            const successesBoosted = pFailure * rerollChance * pRerollSucceeds;
+            adjustedProb = baseProb + successesBoosted;
+        }
 
-        const r = Math.round((1-hitStandard(hitChance,critRange)-critStandard(hitChance,critRange))*100)/100;
-        return r>0?r:0;
-    }
+        // Clamping the result to ensure it stays within the valid probability range [0, 1]
+        return Math.min(Math.max(adjustedProb, 0), 1);
+    };
 
-    function critDisadvantage(hitChance,critRange){
-        let d20 = 20.00;
+    // Standard
+    const critStandard = (hit, crit) => P(crit);
+    const hitStandard = (hit, crit) => Math.max(0, P(hit) - P(crit));
+    const missStandard = (hit, crit) => Math.max(0,1 - hitStandard(hit, crit) - critStandard(hit, crit));
 
-        const r = Math.round((((d20-(critRange-1))**2)/(d20**2))*10000)/10000;
-        return r>0?r:0;
-    }
+    // Advantage (any die succeeds)
+    const critAdvantage = (hit, crit, dice = 2) => pAny(crit, d20, dice??2);
+    const hitAdvantage = (hit, crit, dice = 2) => Math.max(0, pAny(hit, d20, dice??2) - pAny(crit, d20, dice??2));
+    const missAdvantage = (hit, crit, dice = 2) => Math.max(0,1 - hitAdvantage(hit, crit, dice??2) - critAdvantage(hit, crit, dice??2));
 
-    function hitDisadvantage(hitChance,critRange){
-        let d20 = 20.00;
-
-        const r = Math.round(((Math.round((((d20-hitChance+1)**2)/(d20**2))*10000)/10000)-critDisadvantage(hitChance,critRange))*10000)/10000;
-        return r>0?r:0;
-    }
-
-    function missDisadvantage(hitChance,critRange){
-        let d20 = 20.00;
-
-        const r = Math.round((1-hitDisadvantage(hitChance,critRange)-critDisadvantage(hitChance,critRange))*10000)/10000;
-        return r>0?r:0;
-    }
-
-    function critAdvantage(hitChance,critRange){
-        let d20 = 20.00;
-
-        const r = Math.round((((d20-(critRange-1)) * (critRange+d20-1))/(d20**2))*10000)/10000;
-        return r>0?r:0;
-    }
-
-    function hitAdvantage(hitChance,critRange){
-        let d20 = 20.00;
-
-        const r = Math.round(((Math.round(((((d20-hitChance+1) * (d20+hitChance-1)/(d20**2))))*10000)/10000)-critAdvantage(hitChance,critRange))*10000)/10000;
-        return r>0?r:0;
-    }
-
-    function missAdvantage(hitChance,critRange){
-        let d20 = 20.00;
-
-        const r = Math.round((1-hitAdvantage(hitChance,critRange)-critAdvantage(hitChance,critRange))*10000)/10000;
-        return r>0?r:0;
-    }
+    // Disadvantage (all dice must succeed)
+    const critDisadvantage = (hit, crit, dice = 2) => P(crit, d20, dice??2);
+    const hitDisadvantage = (hit, crit, dice = 2) => Math.max(0, P(hit, d20, dice??2) - P(crit, d20, dice??2));
+    const missDisadvantage = (hit, crit, dice = 2) => Math.max(0,1 - hitDisadvantage(hit, crit, dice??2) - critDisadvantage(hit, crit, dice??2));
 
     switch ((index??1).toString()){
         case "0":
-            return {hit:hitDisadvantage(attack.hitChance,attack.critRange),
-                miss: missDisadvantage(attack.hitChance,attack.critRange),
-                crit: critDisadvantage(attack.hitChance,attack.critRange)};
-        case "2":
-            return {hit:hitAdvantage(attack.hitChance,attack.critRange),
-            miss: missAdvantage(attack.hitChance,attack.critRange),
-            crit: critAdvantage(attack.hitChance,attack.critRange)};
+            return {
+                hit:(attack.halflingLucky)?pReroll(hitDisadvantage(attack.hitChance,attack.critRange)):
+                    hitDisadvantage(attack.hitChance,attack.critRange),
+                miss: (attack.halflingLucky)?pReroll(missDisadvantage(attack.hitChance,attack.critRange),true):
+                    missDisadvantage(attack.hitChance,attack.critRange),
+                crit: (attack.halflingLucky)?pReroll(critDisadvantage(attack.hitChance,attack.critRange)):
+                    critDisadvantage(attack.hitChance,attack.critRange)};
         case "1":
-            return {hit:hitStandard(attack.hitChance,attack.critRange),miss:missStandard(attack.hitChance,attack.critRange),crit:critStandard(attack.hitChance,attack.critRange)};
+            return {
+                hit:(attack.halflingLucky)?pReroll(hitStandard(attack.hitChance,attack.critRange)):
+                    hitStandard(attack.hitChance,attack.critRange),
+                miss:(attack.halflingLucky)?pReroll(missStandard(attack.hitChance,attack.critRange),true):
+                    missStandard(attack.hitChance,attack.critRange),
+                crit:(attack.halflingLucky)?pReroll(critStandard(attack.hitChance,attack.critRange)):
+                    critStandard(attack.hitChance,attack.critRange)};
+        case "2":
+            return {
+                hit:(attack.halflingLucky)?pReroll(hitAdvantage(attack.hitChance,attack.critRange)):
+                    hitAdvantage(attack.hitChance,attack.critRange),
+                miss: (attack.halflingLucky)?pReroll(missAdvantage(attack.hitChance,attack.critRange),true):
+                    missAdvantage(attack.hitChance,attack.critRange),
+                crit: (attack.halflingLucky)?pReroll(critAdvantage(attack.hitChance,attack.critRange)):
+                    critAdvantage(attack.hitChance,attack.critRange)};
+        case "3":
+            return {
+                hit:(attack.halflingLucky)?pReroll(hitAdvantage(attack.hitChance,attack.critRange,3)):
+                    hitAdvantage(attack.hitChance,attack.critRange,3),
+                miss:(attack.halflingLucky)?pReroll(missAdvantage(attack.hitChance,attack.critRange,3),true):
+                    missAdvantage(attack.hitChance,attack.critRange,3),
+                crit:(attack.halflingLucky)?pReroll(critAdvantage(attack.hitChance,attack.critRange,3)):
+                    critAdvantage(attack.hitChance,attack.critRange,3)};
+
     }
 }
 

@@ -1,64 +1,43 @@
-function critStandard(hitChance,critRange){
-	let d20 = 20.00;
+const d20 = 20.0
 
-	const r = Math.round(((d20-(critRange-1))/d20)*100)/100;
-	return r>0?r:0;
-}
+const P = (threshold, total = d20, dice = 1) =>
+	((total - threshold + 1) / total) ** Math.max(dice, 1);
+  
+const pAny = (threshold, total = d20, dice = 1) =>
+1 - ((threshold - 1) / total) ** Math.max(dice, 1);
 
-function hitStandard(hitChance,critRange){
-	let d20 = 20.00;
+const pReroll = (threshold, total = d20, rerollThreshold = 1, dice = 1) => {
+const p = (total - threshold + 1) / total;
+const r = rerollThreshold / total;
+return 1 - (1 - (p * (1 - r) + p * r)) ** Math.max(dice, 1);
+};
 
-	const r = Math.round((Math.round(((d20-hitChance+1)/d20)*100)/100-critStandard(hitChance,critRange))*100)/100
-	return r>0?r:0;
-}
+// Standard
+const critStandard = (hit, crit) => P(crit);
+const hitStandard = (hit, crit) => Math.max(0, P(hit) - P(crit));
+const missStandard = (hit, crit) => Math.max(0,1 - hitStandard(hit, crit) - critStandard(hit, crit));
 
-function missStandard(hitChance,critRange){
-	let d20 = 20.00;
+// Advantage (any die succeeds)
+const critAdvantage = (hit, crit, dice = 2) => pAny(crit, d20, dice??2);
+const hitAdvantage = (hit, crit, dice = 2) => Math.max(0, pAny(hit, d20, dice??2) - pAny(crit, d20, dice??2));
+const missAdvantage = (hit, crit, dice = 2) => Math.max(0,1 - hitAdvantage(hit, crit, dice??2) - critAdvantage(hit, crit, dice??2));
 
-	const r = Math.round((1-hitStandard(hitChance,critRange)-critStandard(hitChance,critRange))*100)/100;
-	return r>0?r:0;
-}
+// Disadvantage (all dice must succeed)
+const critDisadvantage = (hit, crit, dice = 2) => P(crit, d20, dice??2);
+const hitDisadvantage = (hit, crit, dice = 2) => Math.max(0, P(hit, d20, dice??2) - P(crit, d20, dice??2));
+const missDisadvantage = (hit, crit, dice = 2) => Math.max(0,1 - hitDisadvantage(hit, crit, dice??2) - critDisadvantage(hit, crit, dice??2));
 
-function critAdvantage(hitChance,critRange){
-	let d20 = 20.00;
+const critReroll = (hit, crit, reroll = 1) => pReroll(crit, d20, reroll??1);
+const hitReroll = (hit, crit, reroll = 1) => Math.max(0, pReroll(hit, d20, reroll??1) - pReroll(crit, d20, reroll??1));
+const missReroll = (hit, crit, reroll = 1) => Math.max(0,1 - hitReroll(hit, crit, reroll??1) - critReroll(hit, crit, reroll??1));
 
-	const r = Math.round((((d20-(critRange-1)) * (critRange+d20-1))/(d20**2))*10000)/10000;
-	return r>0?r:0;
-}
-
-function hitAdvantage(hitChance,critRange){
-	let d20 = 20.00;
-
-	const r = Math.round(((Math.round(((((d20-hitChance+1) * (d20+hitChance-1)/(d20**2))))*10000)/10000)-critAdvantage(hitChance,critRange))*10000)/10000;
-	return r>0?r:0;
-}
-
-function missAdvantage(hitChance,critRange){
-	let d20 = 20.00;
-
-	const r = Math.round((1-hitAdvantage(hitChance,critRange)-critAdvantage(hitChance,critRange))*10000)/10000;
-	return r>0?r:0;
-}
-
-function critDisadvantage(hitChance,critRange){
-	let d20 = 20.00;
-
-	const r = Math.round((((d20-(critRange-1))**2)/(d20**2))*10000)/10000;
-	return r>0?r:0;
-}
-
-function hitDisadvantage(hitChance,critRange){
-	let d20 = 20.00;
-
-	const r = Math.round(((Math.round((((d20-hitChance+1)**2)/(d20**2))*10000)/10000)-critDisadvantage(hitChance,critRange))*10000)/10000;
-	return r>0?r:0;
-}
-
-function missDisadvantage(hitChance,critRange){
-	let d20 = 20.00;
-
-	const r = Math.round((1-hitDisadvantage(hitChance,critRange)-critDisadvantage(hitChance,critRange))*10000)/10000;
-	return r>0?r:0;
+function round(a, b){
+    if(b>=1){
+        return Math.round(a * (10 ** b)) / (10 ** b);
+    }
+    else {
+        return Math.round(a);
+    }
 }
 
 UNITTESThitChanceOdds();
@@ -75,26 +54,26 @@ UNITTESThitAndCritOddsDISADVANTAGE();
 
 function UNITTESThitChanceOdds(){
 
-	let result1 = hitStandard(1,20);
-	let result2 = hitStandard(2,20);
-	let result3 = hitStandard(3,20);
-	let result4 = hitStandard(4,20);
-	let result5 = hitStandard(5,20);
-	let result6 = hitStandard(6,20);
-	let result7 = hitStandard(7,20);
-	let result8 = hitStandard(8,20);
-	let result9 = hitStandard(9,20);
-	let result10 = hitStandard(10,20);
-	let result11 = hitStandard(11,20);
-	let result12 = hitStandard(12,20);
-	let result13 = hitStandard(13,20);
-	let result14 = hitStandard(14,20);
-	let result15 = hitStandard(15,20);
-	let result16 = hitStandard(16,20);
-	let result17 = hitStandard(17,20);
-	let result18 = hitStandard(18,20);
-	let result19 = hitStandard(19,20);
-	let result20 = hitStandard(20,20);
+	let result1 = round(hitStandard(1,20),2);
+	let result2 = round(hitStandard(2,20),2);
+	let result3 = round(hitStandard(3,20),2);
+	let result4 = round(hitStandard(4,20),2);
+	let result5 = round(hitStandard(5,20),2);
+	let result6 = round(hitStandard(6,20),2);
+	let result7 = round(hitStandard(7,20),2);
+	let result8 = round(hitStandard(8,20),2);
+	let result9 = round(hitStandard(9,20),2);
+	let result10 = round(hitStandard(10,20),2);
+	let result11 = round(hitStandard(11,20),2);
+	let result12 = round(hitStandard(12,20),2);
+	let result13 = round(hitStandard(13,20),2);
+	let result14 = round(hitStandard(14,20),2);
+	let result15 = round(hitStandard(15,20),2);
+	let result16 = round(hitStandard(16,20),2);
+	let result17 = round(hitStandard(17,20),2);
+	let result18 = round(hitStandard(18,20),2);
+	let result19 = round(hitStandard(19,20),2);
+	let result20 = round(hitStandard(20,20),2);
 
 
 	assertEqual(result1,0.95);
@@ -118,7 +97,7 @@ function UNITTESThitChanceOdds(){
 	assertEqual(result19,0.05);
 	assertEqual(result20,0);
 
-	console.log("test passed");
+	console.log("\x1b[32m"+"test passed"+"\x1b[0m");
 }
 
 function UNITTESTcritChanceOdds(){
@@ -166,72 +145,72 @@ function UNITTESTcritChanceOdds(){
 	assertEqual(result19,0.10);
 	assertEqual(result20,0.05);
 
-	console.log("test passed");
+	console.log("\x1b[32m"+"test passed"+"\x1b[0m");
 }
 
 function UNITTESThitAndCritOdds(){
 
-	let result1 = hitStandard(1,1);
-	let result2 = hitStandard(2,2);
-	let result3 = hitStandard(3,3);
-	let result4 = hitStandard(4,4);
-	let result5 = hitStandard(5,5);
-	let result6 = hitStandard(6,6);
-	let result7 = hitStandard(7,7);
-	let result8 = hitStandard(8,8);
-	let result9 = hitStandard(9,9);
-	let result10 = hitStandard(10,10);
-	let result11 = hitStandard(11,11);
-	let result12 = hitStandard(12,12);
-	let result13 = hitStandard(13,13);
-	let result14 = hitStandard(14,14);
-	let result15 = hitStandard(15,15);
-	let result16 = hitStandard(16,16);
-	let result17 = hitStandard(17,17);
-	let result18 = hitStandard(18,18);
-	let result19 = hitStandard(19,19);
-	let result20 = hitStandard(20,20);
-	let result21 = hitStandard(1,20);
-	let result22 = hitStandard(2,19);
-	let result23 = hitStandard(3,18);
-	let result24 = hitStandard(4,17);
-	let result25 = hitStandard(5,16);
-	let result26 = hitStandard(6,15);
-	let result27 = hitStandard(7,14);
-	let result28 = hitStandard(8,13);
-	let result29 = hitStandard(9,12);
-	let result30 = hitStandard(10,11);
-	let result31 = hitStandard(11,10);
-	let result32 = hitStandard(12,9);
-	let result33 = hitStandard(13,8);
-	let result34 = hitStandard(14,7);
-	let result35 = hitStandard(15,6);
-	let result36 = hitStandard(16,5);
-	let result37 = hitStandard(17,4);
-	let result38 = hitStandard(18,3);
-	let result39 = hitStandard(19,2);
-	let result40 = hitStandard(20,1);
+	let result1 = round(hitStandard(1,1),2);
+	let result2 = round(hitStandard(1,1),2);
+	let result3 = round(hitStandard(3,3),2);
+	let result4 = round(hitStandard(4,4),2);
+	let result5 = round(hitStandard(5,5),2);
+	let result6 = round(hitStandard(6,6),2);
+	let result7 = round(hitStandard(7,7),2);
+	let result8 = round(hitStandard(8,8),2);
+	let result9 = round(hitStandard(9,9),2);
+	let result10 = round(hitStandard(10,10),2);
+	let result11 = round(hitStandard(11,11),2);
+	let result12 = round(hitStandard(12,12),2);
+	let result13 = round(hitStandard(13,13),2);
+	let result14 = round(hitStandard(14,14),2);
+	let result15 = round(hitStandard(15,15),2);
+	let result16 = round(hitStandard(16,16),2);
+	let result17 = round(hitStandard(17,17),2);
+	let result18 = round(hitStandard(18,18),2);
+	let result19 = round(hitStandard(19,19),2);
+	let result20 = round(hitStandard(20,20),2);
+	let result21 = round(hitStandard(1,20) ,2);
+	let result22 = round(hitStandard(2,19) ,2);
+	let result23 = round(hitStandard(3,18) ,2);
+	let result24 = round(hitStandard(4,17) ,2);
+	let result25 = round(hitStandard(5,16) ,2);
+	let result26 = round(hitStandard(6,15) ,2);
+	let result27 = round(hitStandard(7,14) ,2);
+	let result28 = round(hitStandard(8,13) ,2);
+	let result29 = round(hitStandard(9,12) ,2);
+	let result30 = round(hitStandard(10,11),2);
+	let result31 = round(hitStandard(11,10),2);
+	let result32 = round(hitStandard(12,9),2);
+	let result33 = round(hitStandard(13,8),2);
+	let result34 = round(hitStandard(14,7),2);
+	let result35 = round(hitStandard(15,6),2);
+	let result36 = round(hitStandard(16,5),2);
+	let result37 = round(hitStandard(17,4),2);
+	let result38 = round(hitStandard(18,3),2);
+	let result39 = round(hitStandard(19,2),2);
+	let result40 = round(hitStandard(20,1),2);
 
-	let result41 = missStandard(1,20);
-	let result42 = missStandard(2,19);
-	let result43 = missStandard(3,18);
-	let result44 = missStandard(4,17);
-	let result45 = missStandard(5,16);
-	let result46 = missStandard(6,15);
-	let result47 = missStandard(7,14);
-	let result48 = missStandard(8,13);
-	let result49 = missStandard(9,12);
-	let result50 = missStandard(10,11);
-	let result51 = missStandard(11,10);
-	let result52 = missStandard(12,9);
-	let result53 = missStandard(13,8);
-	let result54 = missStandard(14,7);
-	let result55 = missStandard(15,6);
-	let result56 = missStandard(16,5);
-	let result57 = missStandard(17,4);
-	let result58 = missStandard(18,3);
-	let result59 = missStandard(19,2);
-	let result60 = missStandard(20,1);
+	let result41 = Math.round((missStandard(1,20))*100)/100;
+	let result42 = Math.round((missStandard(2,19))*100)/100;
+	let result43 = Math.round((missStandard(3,18))*100)/100;
+	let result44 = Math.round((missStandard(4,17))*100)/100;
+	let result45 = Math.round((missStandard(5,16) )*100)/100;
+	let result46 = Math.round((missStandard(6,15) )*100)/100;
+	let result47 = Math.round((missStandard(7,14) )*100)/100;
+	let result48 = Math.round((missStandard(8,13))*100)/100;
+	let result49 = Math.round((missStandard(9,12) )*100)/100;
+	let result50 = Math.round((missStandard(10,11) )*100)/100;
+	let result51 = Math.round((missStandard(11,10))*100)/100;
+	let result52 = Math.round((missStandard(12,9) )*100)/100;
+	let result53 = Math.round((missStandard(13,8) )*100)/100;
+	let result54 = Math.round((missStandard(14,7))*100)/100;
+	let result55 = Math.round((missStandard(15,6))*100)/100;
+	let result56 = Math.round((missStandard(16,5))*100)/100;
+	let result57 = Math.round((missStandard(17,4))*100)/100;
+	let result58 = Math.round((missStandard(18,3) )*100)/100;
+	let result59 = Math.round((missStandard(19,2) )*100)/100;
+	let result60 = Math.round((missStandard(20,1))*100)/100;;
 
 
 	assertEqual(result1,0);
@@ -296,12 +275,12 @@ function UNITTESThitAndCritOdds(){
 	assertEqual(result59,0.05);
 	assertEqual(result60,0);
 
-	console.log("test passed");
+	console.log("\x1b[32m"+"test passed"+"\x1b[0m");
 }
 
-function assertEqual(a,b){
+function assertEqual(a,b,message=""){
 	if(a!==b){
-		throw new Error("test failed:\n" +
+		throw new Error("\x1b[31m"+"test failed ("+message.toString()+"):\n" + "\x1b[0m" +
 			"Expected: " + b + "\n" +
 			"Actual: " + a + "\n" +
 			"Stack: " + new Error().stack);
@@ -313,26 +292,26 @@ function assertEqual(a,b){
 // ADVANTAGE
 function UNITTESThitChanceOddsADVANTAGE(){
 
-	let result1 = hitAdvantage(1,20);
-	let result2 = hitAdvantage(2,20);
-	let result3 = hitAdvantage(3,20);
-	let result4 = hitAdvantage(4,20);
-	let result5 = hitAdvantage(5,20);
-	let result6 = hitAdvantage(6,20);
-	let result7 = hitAdvantage(7,20);
-	let result8 = hitAdvantage(8,20);
-	let result9 = hitAdvantage(9,20);
-	let result10 = hitAdvantage(10,20);
-	let result11 = hitAdvantage(11,20);
-	let result12 = hitAdvantage(12,20);
-	let result13 = hitAdvantage(13,20);
-	let result14 = hitAdvantage(14,20);
-	let result15 = hitAdvantage(15,20);
-	let result16 = hitAdvantage(16,20);
-	let result17 = hitAdvantage(17,20);
-	let result18 = hitAdvantage(18,20);
-	let result19 = hitAdvantage(19,20);
-	let result20 = hitAdvantage(20,20);
+	let result1 = Math.round((hitAdvantage(1,20))*10000)/10000;
+	let result2 = Math.round((hitAdvantage(2,20))*10000)/10000;
+	let result3 = Math.round((hitAdvantage(3,20))*10000)/10000;
+	let result4 = Math.round((hitAdvantage(4,20))*10000)/10000;
+	let result5 = Math.round((hitAdvantage(5,20))*10000)/10000;
+	let result6 = Math.round((hitAdvantage(6,20))*10000)/10000;
+	let result7 = Math.round((hitAdvantage(7,20))*10000)/10000;
+	let result8 = Math.round((hitAdvantage(8,20))*10000)/10000;
+	let result9 = Math.round((hitAdvantage(9,20) )*10000)/10000;
+	let result10 = Math.round((hitAdvantage(10,20))*10000)/10000;
+	let result11 = Math.round((hitAdvantage(11,20) )*10000)/10000;
+	let result12 = Math.round((hitAdvantage(12,20) )*10000)/10000;
+	let result13 = Math.round((hitAdvantage(13,20))*10000)/10000;
+	let result14 = Math.round((hitAdvantage(14,20) )*10000)/10000;
+	let result15 = Math.round((hitAdvantage(15,20) )*10000)/10000;
+	let result16 = Math.round((hitAdvantage(16,20) )*10000)/10000;
+	let result17 = Math.round((hitAdvantage(17,20))*10000)/10000;
+	let result18 = Math.round((hitAdvantage(18,20))*10000)/10000;
+	let result19 = Math.round((hitAdvantage(19,20) )*10000)/10000;
+	let result20 = Math.round((hitAdvantage(20,20) )*10000)/10000;
 
 
 	assertEqual(result1,0.9025);
@@ -356,31 +335,31 @@ function UNITTESThitChanceOddsADVANTAGE(){
 	assertEqual(result19,0.0925);
 	assertEqual(result20,0);
 
-	console.log("test passed");
+	console.log("\x1b[32m"+"test passed"+"\x1b[0m");
 }
 
 function UNITTESTcritChanceOddsADVANTAGE(){
 
-	let result1 = critAdvantage(8,1);
-	let result2 = critAdvantage(8,2);
-	let result3 = critAdvantage(8,3);
-	let result4 = critAdvantage(8,4);
-	let result5 = critAdvantage(8,5);
-	let result6 = critAdvantage(8,6);
-	let result7 = critAdvantage(8,7);
-	let result8 = critAdvantage(8,8);
-	let result9 = critAdvantage(8,9);
-	let result10 = critAdvantage(8,10);
-	let result11 = critAdvantage(8,11);
-	let result12 = critAdvantage(8,12);
-	let result13 = critAdvantage(8,13);
-	let result14 = critAdvantage(8,14);
-	let result15 = critAdvantage(8,15);
-	let result16 = critAdvantage(8,16);
-	let result17 = critAdvantage(8,17);
-	let result18 = critAdvantage(8,18);
-	let result19 = critAdvantage(8,19);
-	let result20 = critAdvantage(8,20);
+	let result1 = round(critAdvantage(8,1),4);
+	let result2 = round(critAdvantage(8,2),4);
+	let result3 = round(critAdvantage(8,3),4);
+	let result4 = round(critAdvantage(8,4),4);
+	let result5 = round(critAdvantage(8,5),4);
+	let result6 = round(critAdvantage(8,6),4);
+	let result7 = round(critAdvantage(8,7),4);
+	let result8 = round(critAdvantage(8,8),4);
+	let result9 = round(critAdvantage(8,9),4);
+	let result10 = round(critAdvantage(8,10),4);
+	let result11 = round(critAdvantage(8,11),4);
+	let result12 = round(critAdvantage(8,12),4);
+	let result13 = round(critAdvantage(8,13),4);
+	let result14 = round(critAdvantage(8,14),4);
+	let result15 = round(critAdvantage(8,15),4);
+	let result16 = round(critAdvantage(8,16),4);
+	let result17 = round(critAdvantage(8,17),4);
+	let result18 = round(critAdvantage(8,18),4);
+	let result19 = round(critAdvantage(8,19),4);
+	let result20 = round(critAdvantage(8,20),4);
 
 
 	assertEqual(result1,1);
@@ -404,72 +383,72 @@ function UNITTESTcritChanceOddsADVANTAGE(){
 	assertEqual(result19,0.19);
 	assertEqual(result20,0.0975);
 
-	console.log("test passed");
+	console.log("\x1b[32m"+"test passed"+"\x1b[0m");
 }
 
 function UNITTESThitAndCritOddsADVANTAGE(){
 
-	let result1 = hitAdvantage(1,1);
-	let result2 = hitAdvantage(2,2);
-	let result3 = hitAdvantage(3,3);
-	let result4 = hitAdvantage(4,4);
-	let result5 = hitAdvantage(5,5);
-	let result6 = hitAdvantage(6,6);
-	let result7 = hitAdvantage(7,7);
-	let result8 = hitAdvantage(8,8);
-	let result9 = hitAdvantage(9,9);
-	let result10 = hitAdvantage(10,10);
-	let result11 = hitAdvantage(11,11);
-	let result12 = hitAdvantage(12,12);
-	let result13 = hitAdvantage(13,13);
-	let result14 = hitAdvantage(14,14);
-	let result15 = hitAdvantage(15,15);
-	let result16 = hitAdvantage(16,16);
-	let result17 = hitAdvantage(17,17);
-	let result18 = hitAdvantage(18,18);
-	let result19 = hitAdvantage(19,19);
-	let result20 = hitAdvantage(20,20);
-	let result21 = hitAdvantage(1,20);
-	let result22 = hitAdvantage(2,19);
-	let result23 = hitAdvantage(3,18);
-	let result24 = hitAdvantage(4,17);
-	let result25 = hitAdvantage(5,16);
-	let result26 = hitAdvantage(6,15);
-	let result27 = hitAdvantage(7,14);
-	let result28 = hitAdvantage(8,13);
-	let result29 = hitAdvantage(9,12);
-	let result30 = hitAdvantage(10,11);
-	let result31 = hitAdvantage(11,10);
-	let result32 = hitAdvantage(12,9);
-	let result33 = hitAdvantage(13,8);
-	let result34 = hitAdvantage(14,7);
-	let result35 = hitAdvantage(15,6);
-	let result36 = hitAdvantage(16,5);
-	let result37 = hitAdvantage(17,4);
-	let result38 = hitAdvantage(18,3);
-	let result39 = hitAdvantage(19,2);
-	let result40 = hitAdvantage(20,1);
+	let result1 = round(hitAdvantage(1,1),4);
+	let result2 = round(hitAdvantage(2,2),4);
+	let result3 = round(hitAdvantage(3,3),4);
+	let result4 = round(hitAdvantage(4,4),4);
+	let result5 = round(hitAdvantage(5,5),4);
+	let result6 = round(hitAdvantage(6,6),4);
+	let result7 = round(hitAdvantage(7,7),4);
+	let result8 = round(hitAdvantage(8,8),4);
+	let result9 = round(hitAdvantage(9,9),4);
+	let result10 = round(hitAdvantage(10,10),4);
+	let result11 = round(hitAdvantage(11,11),4);
+	let result12 = round(hitAdvantage(12,12),4);
+	let result13 = round(hitAdvantage(13,13),4);
+	let result14 = round(hitAdvantage(14,14),4);
+	let result15 = round(hitAdvantage(15,15),4);
+	let result16 = round(hitAdvantage(16,16),4);
+	let result17 = round(hitAdvantage(17,17),4);
+	let result18 = round(hitAdvantage(18,18),4);
+	let result19 = round(hitAdvantage(19,19),4);
+	let result20 = round(hitAdvantage(20,20),4);
+	let result21 = round(hitAdvantage(1,20),4);
+	let result22 = round(hitAdvantage(2,19),4);
+	let result23 = round(hitAdvantage(3,18),4);
+	let result24 = round(hitAdvantage(4,17),4);
+	let result25 = round(hitAdvantage(5,16),4);
+	let result26 = round(hitAdvantage(6,15),4);
+	let result27 = round(hitAdvantage(7,14),4);
+	let result28 = round(hitAdvantage(8,13),4);
+	let result29 = round(hitAdvantage(9,12),4);
+	let result30 = round(hitAdvantage(10,11),4);
+	let result31 = round(hitAdvantage(11,10),4);
+	let result32 = round(hitAdvantage(12,9),4);
+	let result33 = round(hitAdvantage(13,8),4);
+	let result34 = round(hitAdvantage(14,7),4);
+	let result35 = round(hitAdvantage(15,6),4);
+	let result36 = round(hitAdvantage(16,5),4);
+	let result37 = round(hitAdvantage(17,4),4);
+	let result38 = round(hitAdvantage(18,3),4);
+	let result39 = round(hitAdvantage(19,2),4);
+	let result40 = round(hitAdvantage(20,1),4);
 
-	let result41 = missAdvantage(1,20);
-	let result42 = missAdvantage(2,19);
-	let result43 = missAdvantage(3,18);
-	let result44 = missAdvantage(4,17);
-	let result45 = missAdvantage(5,16);
-	let result46 = missAdvantage(6,15);
-	let result47 = missAdvantage(7,14);
-	let result48 = missAdvantage(8,13);
-	let result49 = missAdvantage(9,12);
-	let result50 = missAdvantage(10,11);
-	let result51 = missAdvantage(11,10);
-	let result52 = missAdvantage(12,9);
-	let result53 = missAdvantage(13,8);
-	let result54 = missAdvantage(14,7);
-	let result55 = missAdvantage(15,6);
-	let result56 = missAdvantage(16,5);
-	let result57 = missAdvantage(17,4);
-	let result58 = missAdvantage(18,3);
-	let result59 = missAdvantage(19,2);
-	let result60 = missAdvantage(20,1);
+	let result41 = round(missAdvantage(1,20),4);
+	let result42 = round(missAdvantage(2,19),4);
+	let result43 = round(missAdvantage(3,18),4);
+	let result44 = round(missAdvantage(4,17),4);
+	let result45 = round(missAdvantage(5,16),4);
+	let result46 = round(missAdvantage(6,15),4);
+	let result47 = round(missAdvantage(7,14),4);
+	let result48 = round(missAdvantage(8,13),4);
+	let result49 = round(missAdvantage(9,12),4);
+	let result50 = round(missAdvantage(10,11),4);
+	let result51 = round(missAdvantage(11,10),4);
+	let result52 = round(missAdvantage(12,9),4);
+	let result53 = round(missAdvantage(13,8),4);
+	let result54 = round(missAdvantage(14,7),4);
+	let result55 = round(missAdvantage(15,6),4);
+	let result56 = round(missAdvantage(16,5),4);
+	let result57 = round(missAdvantage(17,4),4);
+	let result58 = round(missAdvantage(18,3),4);
+	let result59 = round(missAdvantage(19,2),4);
+	let result60 = round(missAdvantage(20,1),4);
 
 
 	assertEqual(result1,0);
@@ -534,33 +513,33 @@ function UNITTESThitAndCritOddsADVANTAGE(){
 	assertEqual(result59,0.0025);
 	assertEqual(result60,0);
 
-	console.log("test passed");
+	console.log("\x1b[32m"+"test passed"+"\x1b[0m");
 }
 
 
 // DISADVANTAGE
 function UNITTESThitChanceOddsDISADVANTAGE(){
 
-	let result1 = hitDisadvantage(1,20);
-	let result2 = hitDisadvantage(2,20);
-	let result3 = hitDisadvantage(3,20);
-	let result4 = hitDisadvantage(4,20);
-	let result5 = hitDisadvantage(5,20);
-	let result6 = hitDisadvantage(6,20);
-	let result7 = hitDisadvantage(7,20);
-	let result8 = hitDisadvantage(8,20);
-	let result9 = hitDisadvantage(9,20);
-	let result10 = hitDisadvantage(10,20);
-	let result11 = hitDisadvantage(11,20);
-	let result12 = hitDisadvantage(12,20);
-	let result13 = hitDisadvantage(13,20);
-	let result14 = hitDisadvantage(14,20);
-	let result15 = hitDisadvantage(15,20);
-	let result16 = hitDisadvantage(16,20);
-	let result17 = hitDisadvantage(17,20);
-	let result18 = hitDisadvantage(18,20);
-	let result19 = hitDisadvantage(19,20);
-	let result20 = hitDisadvantage(20,20);
+	let result1 = Math.round((hitDisadvantage(1,20))*10000)/10000;
+	let result2 = Math.round((hitDisadvantage(2,20))*10000)/10000;
+	let result3 = Math.round((hitDisadvantage(3,20) )*10000)/10000;
+	let result4 = Math.round((hitDisadvantage(4,20) )*10000)/10000;
+	let result5 = Math.round((hitDisadvantage(5,20) )*10000)/10000;
+	let result6 = Math.round((hitDisadvantage(6,20) )*10000)/10000;
+	let result7 = Math.round((hitDisadvantage(7,20))*10000)/10000;
+	let result8 = Math.round((hitDisadvantage(8,20) )*10000)/10000;
+	let result9 = Math.round((hitDisadvantage(9,20))*10000)/10000;
+	let result10 = Math.round((hitDisadvantage(10,20))*10000)/10000;
+	let result11 = Math.round((hitDisadvantage(11,20))*10000)/10000;
+	let result12 = Math.round((hitDisadvantage(12,20))*10000)/10000;
+	let result13 = Math.round((hitDisadvantage(13,20))*10000)/10000;
+	let result14 = Math.round((hitDisadvantage(14,20))*10000)/10000;
+	let result15 = Math.round((hitDisadvantage(15,20))*10000)/10000;
+	let result16 = Math.round((hitDisadvantage(16,20) )*10000)/10000;
+	let result17 = Math.round((hitDisadvantage(17,20) )*10000)/10000;
+	let result18 = Math.round((hitDisadvantage(18,20))*10000)/10000;
+	let result19 = Math.round((hitDisadvantage(19,20))*10000)/10000;
+	let result20 = Math.round((hitDisadvantage(20,20))*10000)/10000;
 
 
 	assertEqual(result1,0.9975);
@@ -584,31 +563,31 @@ function UNITTESThitChanceOddsDISADVANTAGE(){
 	// assertEqual(result19,-0.0015);
 	assertEqual(result20,0);
 
-	console.log("test passed");
+	console.log("\x1b[32m"+"test passed"+"\x1b[0m");
 }
 
 function UNITTESTcritChanceOddsDISADVANTAGE(){
 
-	let result1 = critDisadvantage(8,1);
-	let result2 = critDisadvantage(8,2);
-	let result3 = critDisadvantage(8,3);
-	let result4 = critDisadvantage(8,4);
-	let result5 = critDisadvantage(8,5);
-	let result6 = critDisadvantage(8,6);
-	let result7 = critDisadvantage(8,7);
-	let result8 = critDisadvantage(8,8);
-	let result9 = critDisadvantage(8,9);
-	let result10 = critDisadvantage(8,10);
-	let result11 = critDisadvantage(8,11);
-	let result12 = critDisadvantage(8,12);
-	let result13 = critDisadvantage(8,13);
-	let result14 = critDisadvantage(8,14);
-	let result15 = critDisadvantage(8,15);
-	let result16 = critDisadvantage(8,16);
-	let result17 = critDisadvantage(8,17);
-	let result18 = critDisadvantage(8,18);
-	let result19 = critDisadvantage(8,19);
-	let result20 = critDisadvantage(8,20);
+	let result1 = round(critDisadvantage(8,1),4);
+	let result2 = round(critDisadvantage(8,2),4);
+	let result3 = round(critDisadvantage(8,3),4);
+	let result4 = round(critDisadvantage(8,4),4);
+	let result5 = round(critDisadvantage(8,5),4);
+	let result6 = round(critDisadvantage(8,6),4);
+	let result7 = round(critDisadvantage(8,7),4);
+	let result8 = round(critDisadvantage(8,8),4);
+	let result9 = round(critDisadvantage(8,9),4);
+	let result10 = round(critDisadvantage(8,10),4);
+	let result11 = round(critDisadvantage(8,11),4);
+	let result12 = round(critDisadvantage(8,12),4);
+	let result13 = round(critDisadvantage(8,13),4);
+	let result14 = round(critDisadvantage(8,14),4);
+	let result15 = round(critDisadvantage(8,15),4);
+	let result16 = round(critDisadvantage(8,16),4);
+	let result17 = round(critDisadvantage(8,17),4);
+	let result18 = round(critDisadvantage(8,18),4);
+	let result19 = round(critDisadvantage(8,19),4);
+	let result20 = round(critDisadvantage(8,20),4);
 
 
 	assertEqual(result1,1);
@@ -632,72 +611,72 @@ function UNITTESTcritChanceOddsDISADVANTAGE(){
 	assertEqual(result19,0.01);
 	assertEqual(result20,0.0025);
 
-	console.log("test passed");
+	console.log("\x1b[32m"+"test passed"+"\x1b[0m");
 }
 
 function UNITTESThitAndCritOddsDISADVANTAGE(){
 
-	let result1 = hitDisadvantage(1,1);
-	let result2 = hitDisadvantage(2,2);
-	let result3 = hitDisadvantage(3,3);
-	let result4 = hitDisadvantage(4,4);
-	let result5 = hitDisadvantage(5,5);
-	let result6 = hitDisadvantage(6,6);
-	let result7 = hitDisadvantage(7,7);
-	let result8 = hitDisadvantage(8,8);
-	let result9 = hitDisadvantage(9,9);
-	let result10 = hitDisadvantage(10,10);
-	let result11 = hitDisadvantage(11,11);
-	let result12 = hitDisadvantage(12,12);
-	let result13 = hitDisadvantage(13,13);
-	let result14 = hitDisadvantage(14,14);
-	let result15 = hitDisadvantage(15,15);
-	let result16 = hitDisadvantage(16,16);
-	let result17 = hitDisadvantage(17,17);
-	let result18 = hitDisadvantage(18,18);
-	let result19 = hitDisadvantage(19,19);
-	let result20 = hitDisadvantage(20,20);
-	let result21 = hitDisadvantage(1,20);
-	let result22 = hitDisadvantage(2,19);
-	let result23 = hitDisadvantage(3,18);
-	let result24 = hitDisadvantage(4,17);
-	let result25 = hitDisadvantage(5,16);
-	let result26 = hitDisadvantage(6,15);
-	let result27 = hitDisadvantage(7,14);
-	let result28 = hitDisadvantage(8,13);
-	let result29 = hitDisadvantage(9,12);
-	let result30 = hitDisadvantage(10,11);
-	let result31 = hitDisadvantage(11,10);
-	let result32 = hitDisadvantage(12,9);
-	let result33 = hitDisadvantage(13,8);
-	let result34 = hitDisadvantage(14,7);
-	let result35 = hitDisadvantage(15,6);
-	let result36 = hitDisadvantage(16,5);
-	let result37 = hitDisadvantage(17,4);
-	let result38 = hitDisadvantage(18,3);
-	let result39 = hitDisadvantage(19,2);
-	let result40 = hitDisadvantage(20,1);
+	let result1 = round(hitDisadvantage(1,1),4);
+	let result2 = round(hitDisadvantage(2,2),4);
+	let result3 = round(hitDisadvantage(3,3),4);
+	let result4 = round(hitDisadvantage(4,4),4);
+	let result5 = round(hitDisadvantage(5,5),4);
+	let result6 = round(hitDisadvantage(6,6),4);
+	let result7 = round(hitDisadvantage(7,7),4);
+	let result8 = round(hitDisadvantage(8,8),4);
+	let result9 = round(hitDisadvantage(9,9),4);
+	let result10 = round(hitDisadvantage(10,10),4);
+	let result11 = round(hitDisadvantage(11,11),4);
+	let result12 = round(hitDisadvantage(12,12),4);
+	let result13 = round(hitDisadvantage(13,13),4);
+	let result14 = round(hitDisadvantage(14,14),4);
+	let result15 = round(hitDisadvantage(15,15),4);
+	let result16 = round(hitDisadvantage(16,16),4);
+	let result17 = round(hitDisadvantage(17,17),4);
+	let result18 = round(hitDisadvantage(18,18),4);
+	let result19 = round(hitDisadvantage(19,19),4);
+	let result20 = round(hitDisadvantage(20,20),4);
+	let result21 = round(hitDisadvantage(1,20),4);
+	let result22 = round(hitDisadvantage(2,19),4);
+	let result23 = round(hitDisadvantage(3,18),4);
+	let result24 = round(hitDisadvantage(4,17),4);
+	let result25 = round(hitDisadvantage(5,16),4);
+	let result26 = round(hitDisadvantage(6,15),4);
+	let result27 = round(hitDisadvantage(7,14) ,4);
+	let result28 = round(hitDisadvantage(8,13),4);
+	let result29 = round(hitDisadvantage(9,12) ,4);
+	let result30 = round(hitDisadvantage(10,11),4);
+	let result31 = round(hitDisadvantage(11,10),4);
+	let result32 = round(hitDisadvantage(12,9),4);
+	let result33 = round(hitDisadvantage(13,8),4);
+	let result34 = round(hitDisadvantage(14,7),4);
+	let result35 = round(hitDisadvantage(15,6),4);
+	let result36 = round(hitDisadvantage(16,5),4);
+	let result37 = round(hitDisadvantage(17,4),4);
+	let result38 = round(hitDisadvantage(18,3),4);
+	let result39 = round(hitDisadvantage(19,2),4);
+	let result40 = round(hitDisadvantage(20,1),4);
 
-	let result41 = missDisadvantage(1,20);
-	let result42 = missDisadvantage(2,19);
-	let result43 = missDisadvantage(3,18);
-	let result44 = missDisadvantage(4,17);
-	let result45 = missDisadvantage(5,16);
-	let result46 = missDisadvantage(6,15);
-	let result47 = missDisadvantage(7,14);
-	let result48 = missDisadvantage(8,13);
-	let result49 = missDisadvantage(9,12);
-	let result50 = missDisadvantage(10,11);
-	let result51 = missDisadvantage(11,10);
-	let result52 = missDisadvantage(12,9);
-	let result53 = missDisadvantage(13,8);
-	let result54 = missDisadvantage(14,7);
-	let result55 = missDisadvantage(15,6);
-	let result56 = missDisadvantage(16,5);
-	let result57 = missDisadvantage(17,4);
-	let result58 = missDisadvantage(18,3);
-	let result59 = missDisadvantage(19,2);
-	let result60 = missDisadvantage(20,1);
+	let result41 = round(missDisadvantage(1,20),4);
+	let result42 = round(missDisadvantage(2,19),4);
+	let result43 = round(missDisadvantage(3,18),4);
+	let result44 = round(missDisadvantage(4,17),4);
+	let result45 = round(missDisadvantage(5,16),4);
+	let result46 = round(missDisadvantage(6,15),4);
+	let result47 = round(missDisadvantage(7,14),4);
+	let result48 = round(missDisadvantage(8,13),4);
+	let result49 = round(missDisadvantage(9,12),4);
+	let result50 = round(missDisadvantage(10,11),4);
+	let result51 = round(missDisadvantage(11,10),4);
+	let result52 = round(missDisadvantage(12,9),4);
+	let result53 = round(missDisadvantage(13,8),4);
+	let result54 = round(missDisadvantage(14,7),4);
+	let result55 = round(missDisadvantage(15,6),4);
+	let result56 = round(missDisadvantage(16,5),4);
+	let result57 = round(missDisadvantage(17,4),4);
+	let result58 = round(missDisadvantage(18,3),4);
+	let result59 = round(missDisadvantage(19,2),4);
+	let result60 = round(missDisadvantage(20,1),4);
 
 
 	assertEqual(result1,0);
@@ -762,5 +741,5 @@ function UNITTESThitAndCritOddsDISADVANTAGE(){
 	assertEqual(result59,0.0975);
 	assertEqual(result60,0);
 
-	console.log("test passed");
+	console.log("\x1b[32m"+"test passed"+"\x1b[0m");
 }
