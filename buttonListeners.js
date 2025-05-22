@@ -86,21 +86,18 @@ function setEventListenersForRound(roundId = 0) {
         //Updaterounds
         setEventListenersForRound(newRoundCount);
         validateAttack();
-    });
     }, { signal: controller.signal });
 
-    // removeRoundButton.addEventListener("click", function () {
-    //     const {roundId} = matchRoundAndAttack(removeRoundButton.id);
-    //
-    //     if (roundId === 0) {
-    //         return;
-    //     }
-    //
-    //     const roundFieldset = getRoundFieldset(roundId);
-    //     roundFieldset.remove();
-    //
-    //     validateAttack();
-    // });
+    removeRoundButton.addEventListener("click", function () {
+        const {roundId} = matchRoundAndAttack(removeRoundButton.id);
+
+        if (roundId <= 0) {
+            return;
+        }
+
+        getRoundFieldset(roundId).dispatchEvent(new Event("dispose"));
+        validateAttack();
+    }, { signal: controller.signal});
 
     if(getAttachedAttacks(roundId).length > 0) {
         getAttachedAttacks(roundId).forEach((attackFieldset) => {

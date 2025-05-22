@@ -5,7 +5,7 @@ const a = function (roundCount) {
                     <span>Round #${roundCount + 1}</span>
                 </legend>
                 <button type="button" id="round.${roundCount}.newRoundButton">+</button>
-                <button type="button" id="round.${roundCount}.removeRoundButton" disabled>-</button>
+                <button type="button" id="round.${roundCount}.removeRoundButton">-</button>
                  <!-- lastRound -->
                 <div>
                     <label for="round.${roundCount}.lastRound" class="p-d-block">Last Round? (Increased simulation accuracy)</label>
