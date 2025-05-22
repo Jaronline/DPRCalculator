@@ -1,11 +1,12 @@
 import createAttackForm from "./tempAttackForm.js";
 import createRoundForm from "./tempRoundForm.js";
+import {validateAttack} from "./index.js";
 
 const dprForm = document.getElementById("dprForm");
 
 setEventListenersForRound();
 
-function createElementFromHTMLString(htmlString) {
+export function createElementFromHTMLString(htmlString) {
     const wrapper = document.createElement("div");
     wrapper.innerHTML = htmlString;
     return unwrapFirst(wrapper);
@@ -42,7 +43,7 @@ function insertAfter(insertNode, referenceNode) {
     }
 }
 
-function setEventListenersForRound(roundId = 0) {
+export function setEventListenersForRound(roundId = 0) {
     const newRoundButton = document.getElementById("round."+ roundId +".newRoundButton");
     const removeRoundButton = document.getElementById("round."+ roundId +".removeRoundButton");
 
@@ -106,7 +107,7 @@ function setEventListenersForRound(roundId = 0) {
         setEventListenersForAttack(roundId);
     }
 }
-function setEventListenersForAttack(roundId = 0, attackId = 0) {
+export function setEventListenersForAttack(roundId = 0, attackId = 0) {
     const dprFieldset = document.getElementById("round." + roundId);
     const newAttackButton = document.getElementById("round." + roundId + ".attack."+ attackId +".newAttackButton");
     const copyAttackButton = document.getElementById("round." + roundId + ".attack."+ attackId +".copyAttackButton");

@@ -1,3 +1,7 @@
+import createRoundForm from "./tempRoundForm.js";
+import createAttackForm from "./tempAttackForm.js";
+import { setEventListenersForRound, setEventListenersForAttack, createElementFromHTMLString } from "./buttonListeners.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('change', (event) => {
         if (event.target.id.includes("round.") && (event.target.id.includes(".attack.") || event.target.id.includes(".lastRound"))) {
@@ -40,6 +44,7 @@ function validForm() {
 const dprForm = document.getElementById("dprForm");
 
 validateAttack();
+loadData();
 
 // if using the Calculator for (save DC):
 // INT saves: 71.0% failure rate [INCREASE hit chance by 1/20]
@@ -122,28 +127,28 @@ function round(a, b){
 
 
 function mapDOMToObject() {
-    let a = Array.from(document.querySelectorAll("[id^='round']")).filter((e)=>e.id.split(".").length === 2);
+    let a = Array.from(dprForm.querySelectorAll("[id^='round']")).filter((e)=>e.id.split(".").length === 2);
     let c = [];
     a.forEach(
         (b, rIndex) => {
             b = {
-                attacks: Array.from(document.querySelectorAll(`[id^='round.${rIndex}.attack']`)).filter((e)=>{
+                attacks: Array.from(dprForm.querySelectorAll(`[id^='round.${rIndex}.attack']`)).filter((e)=>{
                     return e.id.split(".").length === 4;
                 }),
-                lastRound: document.querySelector(`[id^='round.${rIndex}.lastRound']`)?.checked??false,
+                lastRound: dprForm.querySelector(`[id^='round.${rIndex}.lastRound']`)?.checked??false,
             }
             let e = [];
             b.attacks.forEach((d,aIndex)=>{
-                let critRange = document.querySelector(`[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='critRange']:not([id*='average' i])`);
-                let damageNotMultiplied = document.querySelector(`input[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='damageNotMultiplied']:not([id*='average' i])`);
-                let damageOnCritFlat =document.querySelector(`input[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='damageOnCritFlat']:not([id*='average' i])`)
-                let damageOnCritMultiplied =document.querySelector(`input[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='damageOnCritMultiplied']:not([id*='average' i])`)
-                let damageOnHit =document.querySelector(`input[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='damageOnHit']:not([id*='average' i])`)
-                let damageOnMiss =document.querySelector(`input[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='damageOnMiss']:not([id*='average' i])`)
-                let halflingLucky =document.querySelector(`[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='halflingLucky']:not([id*='average' i])`)
-                let hitChance =document.querySelector(`[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='hitChance']:not([id*='average' i])`)
-                let hitChanceArrayIndex =document.querySelector(`[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='hitChanceArrayIndex']:not([id*='average' i])`)
-                let multiplier =document.querySelector(`[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='multiplier']:not([id*='average' i])`)
+                let critRange = dprForm.querySelector(`[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='critRange']:not([id*='average' i])`);
+                let damageNotMultiplied = dprForm.querySelector(`input[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='damageNotMultiplied']:not([id*='average' i])`);
+                let damageOnCritFlat =dprForm.querySelector(`input[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='damageOnCritFlat']:not([id*='average' i])`)
+                let damageOnCritMultiplied =dprForm.querySelector(`input[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='damageOnCritMultiplied']:not([id*='average' i])`)
+                let damageOnHit =dprForm.querySelector(`input[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='damageOnHit']:not([id*='average' i])`)
+                let damageOnMiss =dprForm.querySelector(`input[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='damageOnMiss']:not([id*='average' i])`)
+                let halflingLucky =dprForm.querySelector(`[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='halflingLucky']:not([id*='average' i])`)
+                let hitChance =dprForm.querySelector(`[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='hitChance']:not([id*='average' i])`)
+                let hitChanceArrayIndex =dprForm.querySelector(`[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='hitChanceArrayIndex']:not([id*='average' i])`)
+                let multiplier =dprForm.querySelector(`[id^='round.${rIndex}'][id*='attack.${aIndex}'][id*='multiplier']:not([id*='average' i])`)
 
                 d = {
                     critRange: critRange?.value??undefined,
@@ -168,16 +173,71 @@ function mapDOMToObject() {
 }
 
 function mapObjectToDOM(rounds) {
-    rounds.forEach((round,rIndex)=>{
-        round.attacks.forEach((attack,aIndex)=> {
-            Object.entries(attack).forEach(([key,value])=>{
-                let input = document.querySelector(`[id^='round.${rIndex}.attack.${aIndex}.${key}']`);
-                let span = document.querySelector(`span[id^='round.${rIndex}.attack.${aIndex}.${key}']`);
-                span?span.innerHTML=value??"":"";
-                input?input.value=value??undefined:undefined;
-            })
-            })
-    })
+    if (!rounds || rounds.length <= 0 || !Array.isArray(rounds)) return;
+    let domRoundsFieldsets = Array.from(dprForm.querySelectorAll(`fieldset[id^='round.']`)).filter(e=>e.id.split(".").length === 2);
+
+    for(let i = 0; i < domRoundsFieldsets.length; i++) {
+        const fieldset = domRoundsFieldsets[i];
+        const roundIndex = parseInt(fieldset.id.split(".")[1]);
+        if(roundIndex > 0) {
+            if (isNaN(roundIndex) || !rounds[roundIndex] || rounds[roundIndex]?.simulated) {
+                fieldset.dispatchEvent(new Event("dispose"));
+            }
+        }
+    }
+
+    rounds.forEach((round, rIndex) => {
+        if (round.simulated) return; // Skip simulated rounds
+
+        let domAttacksFieldsets = Array.from(dprForm.querySelectorAll(`fieldset[id^='round.${rIndex}.attack.']`)).filter(e=>e.id.split(".").length === 4);
+
+        for(let i = 0; i < domAttacksFieldsets.length; i++) {
+            const fieldset = domAttacksFieldsets[i];
+            const attackIndex = parseInt(fieldset.id.split(".")[3]);
+            if(attackIndex > 0) {
+                if (isNaN(attackIndex) || !round.attacks[attackIndex]) {
+                    fieldset.dispatchEvent(new Event("dispose"));
+                }
+            }
+        }
+
+        let roundFieldset = dprForm.querySelector(`fieldset[id='round.${rIndex}']`);
+
+        if (!roundFieldset) {
+            roundFieldset = createElementFromHTMLString(createRoundForm(rIndex));
+            dprForm.appendChild(roundFieldset);
+            setEventListenersForRound(rIndex);
+            roundFieldset = dprForm.querySelector(`fieldset[id='round.${rIndex}']`);
+        }
+
+        const lastRoundCheckbox = dprForm.querySelector(`[id='round.${rIndex}.lastRound']`);
+        if (lastRoundCheckbox) lastRoundCheckbox.checked = round.lastRound ?? false;
+
+        round.attacks.forEach((attack, aIndex) => {
+            let attackFieldset = dprForm.querySelector(`fieldset[id='round.${rIndex}.attack.${aIndex}']`);
+
+            if (!attackFieldset) {
+                attackFieldset = createElementFromHTMLString(createAttackForm(rIndex, aIndex));
+                roundFieldset.appendChild(attackFieldset);
+                setEventListenersForAttack(rIndex, aIndex);
+                attackFieldset = dprForm.querySelector(`fieldset[id='round.${rIndex}.attack.${aIndex}']`);
+            }
+
+            Object.entries(attack).forEach(([key, value]) => {
+                const input = attackFieldset.querySelector(`[id='round.${rIndex}.attack.${aIndex}.${key}']`);
+                const span = attackFieldset.querySelector(`span[id='round.${rIndex}.attack.${aIndex}.${key}']`);
+                if (span) span.innerHTML = value ?? "";
+
+                if (input) {
+                    if (input.type === "checkbox") {
+                        input.checked = value ?? false;
+                    } else {
+                        input.value = value ?? "";
+                    }
+                }
+            });
+        });
+    });
 }
 
 function genOutputDOM(rounds) {
@@ -216,9 +276,11 @@ function genOutputDOM(rounds) {
     addToTable += `<tr><td>Total Combat Damage:</td><td></td><td>${totalDPR.toFixed(2)}</td></tr>`;
 
     document.querySelector("table[id='outputDPR']").innerHTML = addToTable;
+
+    saveData(rounds);
 }
 
-function validateAttack() {
+export function validateAttack() {
     // find all rounds
     // per round find all attacks
     // per attack find all damages
@@ -349,6 +411,26 @@ function getHitChanceFromIndex(index,attack){
                 crit:(attack.halflingLucky)?pReroll(critAdvantage(attack.hitChance,attack.critRange,3)):
                     critAdvantage(attack.hitChance,attack.critRange,3)};
 
+    }
+}
+
+function saveData(rounds) {
+    let roundsString = JSON.stringify(rounds);
+    if ((roundsString !== sessionStorage.getItem("rounds") || sessionStorage.getItem("rounds") === null || sessionStorage.getItem("rounds") === undefined) && rounds.length > 0 && roundsString !== "[]" && roundsString !== null && roundsString !== undefined && roundsString !== "") {
+        console.log("Saving rounds to session storage.");
+        sessionStorage.setItem("rounds", roundsString);
+    }
+}
+
+function loadData() {
+    let roundsString = sessionStorage.getItem("rounds");
+    if (roundsString !== null && roundsString !== undefined && roundsString !== "" && roundsString !== "[]") {
+        console.log("Loading rounds from session storage.");
+        let rounds = JSON.parse(roundsString);
+        if (rounds.length <= 0) {
+            return;
+        }
+        mapObjectToDOM(rounds);
     }
 }
 
