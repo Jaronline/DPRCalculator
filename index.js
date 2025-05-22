@@ -1,3 +1,40 @@
+document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('change', (event) => {
+        if (event.target.id.includes("round.") && (event.target.id.includes(".attack.") || event.target.id.includes(".lastRound"))) {
+            // Call the function to update the output table
+            if(validForm()){
+                validateAttack();
+            }
+
+            if (event.target.id.includes(".lastRound")) {
+                const roundId = event.target.id.split(".")[1];
+                document.querySelectorAll(`[id^='round.']`).forEach(round => {
+                    if (round.id.split(".")[1] !== roundId) {
+                        const lastRoundCheckbox = round.querySelector(`[id^='round.${round.id.split(".")[1]}.lastRound']`);
+                        if (lastRoundCheckbox) {
+                            lastRoundCheckbox.checked = false;
+                            lastRoundCheckbox.disabled = event.target.checked;
+                        }
+                    }
+                });
+            }
+        }
+    });
+});
+
+function validForm() {
+    const form = document.getElementById('dprForm');
+    const inputs = form.querySelectorAll('input, select');
+    let isValid = true;
+
+    inputs.forEach(input => {
+        if (!input.checkValidity()) {
+            isValid = false;
+        }
+    });
+
+    return isValid;
+}
 validateAttack();
 
 // TODO:
@@ -14,6 +51,30 @@ validateAttack();
 // STR saves: 61.7% [REDUCE hit chance by 1/20]
 // WIS saves: 55.6% [REDUCE hit chance by 2/20]
 // CON saves: 54.1% [REDUCE hit chance by 2/20]
+
+function handleDiceInput(e) {
+    if (e.toString().match(/^[\d+\-\*\/\^\(\)d\s]+$/) == null){
+        return 0;
+    }
+    else {
+        e.toString().toLowerCase();
+    }
+
+    let avgString = e.toString();
+    e.toString().match(/(\d*(?=d)?)(d(?=\d))(\d+)?/gdi)?.forEach((d) => {
+        let [acc,side] = d.split("d")
+
+        if (side === "" || !Number.isSafeInteger(Number(side)) || isNaN(Number(side)) || side === "0" || acc === "0" || acc === undefined || side === undefined) {
+            avgString = avgString.replace(d, Number(0).toString());
+        }
+        if(acc === "" || acc === undefined || Number(acc) === 0){
+            avgString = avgString.replace(d, Math.floor((1+Number(side))/2).toString());
+        }
+
+        avgString = avgString.replace(d, Math.floor(Number(acc) * ((1+Number(side))/2)).toString());
+    });
+    return total(avgString);
+}
 
 function avg(...e) {
     return div(e.reduce(add, 0),e.length);
@@ -176,11 +237,11 @@ function validateAttack() {
                 attack.missChangePercentage = round((chance.miss * 100),2)??undefined;
                 attack.hitChangePercentage = round((chance.hit * 100),2)??undefined;
                 attack.critChangePercentage = round((chance.crit * 100),2)??undefined;
-                attack.damageOnHitAverage = total(attack.damageOnHit);
-                attack.damageNotMultipliedAverage = total(attack.damageNotMultiplied);
-                attack.damageOnCritFlatAverage = total(attack.damageOnCritFlat);
-                attack.damageOnCritMultipliedAverage = total(attack.damageOnCritMultiplied);
-                attack.damageOnMissAverage = total(attack.damageOnMiss);
+                attack.damageOnHitAverage = total(handleDiceInput(attack.damageOnHit));
+                attack.damageNotMultipliedAverage = total(handleDiceInput(attack.damageNotMultiplied));
+                attack.damageOnCritFlatAverage = total(handleDiceInput(attack.damageOnCritFlat));
+                attack.damageOnCritMultipliedAverage = total(handleDiceInput(attack.damageOnCritMultiplied));
+                attack.damageOnMissAverage = total(handleDiceInput(attack.damageOnMiss));
                 return attack;
             }),
     }))

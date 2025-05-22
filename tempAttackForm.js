@@ -96,7 +96,9 @@ const a = function(roundCount, attackCount = 0) {
                         for="${idPrefix}.damageOnHit">Damage On Hit</label>
                 <input
                         name="${idPrefix}.damageOnHit" class="p-inputtext p-component p-filled"
-                        id="${idPrefix}.damageOnHit" value="">
+                        id="${idPrefix}.damageOnHit" value=""
+                        pattern="^[\\d+\\-\\*\\/\\^\\(\\)d\\s]+$"
+                        >
             </div>
             
             <!--damageOnHit average -->
@@ -110,7 +112,9 @@ const a = function(roundCount, attackCount = 0) {
                 <label for="${idPrefix}.damageNotMultiplied">Additional Damage NOT multiplied Critical Hit</label>
                 <input
                         name="${idPrefix}.damageNotMultiplied" class="p-inputtext p-component p-filled"
-                        id="${idPrefix}.damageNotMultiplied" value="">
+                        id="${idPrefix}.damageNotMultiplied" value=""
+                        pattern="^[\\d+\\-\\*\\/\\^\\(\\)d\\s]+$"
+                        >
             </div>
         
             <!-- damageNotMultiplied average -->
@@ -124,7 +128,9 @@ const a = function(roundCount, attackCount = 0) {
                 <label for="${idPrefix}.damageOnCritFlat">Damage Bonus on Crit (Not Multiplied)</label>
                 <input
                         name="${idPrefix}.damageOnCritFlat" class="p-inputtext p-component"
-                        id="${idPrefix}.damageOnCritFlat" value="">
+                        id="${idPrefix}.damageOnCritFlat" value=""
+                        pattern="^[\\d+\\-\\*\\/\\^\\(\\)d\\s]+$"
+                        >
             </div>
         
             <!-- damageOnCritFlat average -->
@@ -138,7 +144,9 @@ const a = function(roundCount, attackCount = 0) {
                 <label for="${idPrefix}.damageOnCritMultiplied">Damage Bonus on Crit (Dice Multiplied)</label>
                 <input
                         name="${idPrefix}.damageOnCritMultiplied" class="p-inputtext p-component"
-                        id="${idPrefix}.damageOnCritMultiplied" value="">
+                        id="${idPrefix}.damageOnCritMultiplied" value=""
+                        pattern="^[\\d+\\-\\*\\/\\^\\(\\)d\\s]+$"
+                        >
             </div>
         
             <!-- damageOnCritMultiplied average -->
@@ -152,7 +160,9 @@ const a = function(roundCount, attackCount = 0) {
                 <label for="${idPrefix}.damageOnMiss">Damage Dealt on Miss</label>
                 <input
                         name="${idPrefix}.damageOnMiss" class="p-inputtext p-component"
-                        id="${idPrefix}.damageOnMiss" value="">
+                        id="${idPrefix}.damageOnMiss" value=""
+                        pattern="^[\\d+\\-\\*\\/\\^\\(\\)d\\s]+$"
+                        >
             </div>
         
             <!-- damageOnMiss average -->

@@ -123,7 +123,10 @@
                     for="round.0.attack.0.damageOnHit">Damage On Hit</label>
             <input
                     name="round.0.attack.0.damageOnHit" class="p-inputtext p-component p-filled"
-                    id="round.0.attack.0.damageOnHit" value="12">
+                    id="round.0.attack.0.damageOnHit" value="12"
+                    type="text"
+                    pattern="^[\d+\-\*\/\^\(\)d\s]+$"
+            >
                 </div>
 
             <!--damageOnHit average -->
@@ -135,7 +138,10 @@
             <div><label for="round.0.attack.0.damageNotMultiplied">Additional Damage NOT multiplied Critical Hit</label>
                 <input
                         name="round.0.attack.0.damageNotMultiplied" class="p-inputtext p-component p-filled"
-                        id="round.0.attack.0.damageNotMultiplied" value="2+2"></div>
+                        id="round.0.attack.0.damageNotMultiplied" value="2+2"
+                        type="text"
+                        pattern="^[\d+\-\*\/\^\(\)d\s]+$"
+                ></div>
 
             <!-- damageNotMultiplied average -->
             <div><label class="p-d-block">Average</label>
@@ -146,7 +152,9 @@
             <div><label for="round.0.attack.0.damageOnCritFlat">Damage Bonus on Crit (Not Multiplied)</label>
             <input
                     name="round.0.attack.0.damageOnCritFlat" class="p-inputtext p-component"
-                    id="round.0.attack.0.damageOnCritFlat" value=""></div>
+                    id="round.0.attack.0.damageOnCritFlat" value=""
+                    pattern="^[\d+\-\*\/\^\(\)d\s]+$"
+            ></div>
 
             <!-- damageOnCritFlat average -->
             <div><label class="p-d-block">Average</label>
@@ -157,7 +165,9 @@
             <div><label for="round.0.attack.0.damageOnCritMultiplied">Damage Bonus on Crit (Dice Multiplied)</label>
             <input
                     name="round.0.attack.0.damageOnCritMultiplied" class="p-inputtext p-component"
-                    id="round.0.attack.0.damageOnCritMultiplied" value=""></div>
+                    id="round.0.attack.0.damageOnCritMultiplied" value=""
+                    pattern="^[\d+\-\*\/\^\(\)d\s]+$"
+            ></div>
 
             <!-- damageOnCritMultiplied average -->
             <div><label class="p-d-block">Average</label>
@@ -168,7 +178,9 @@
             <div><label for="round.0.attack.0.damageOnMiss">Damage Dealt on Miss</label>
             <input
                     name="round.0.attack.0.damageOnMiss" class="p-inputtext p-component"
-                    id="round.0.attack.0.damageOnMiss" value=""></div>
+                    id="round.0.attack.0.damageOnMiss" value=""
+                    pattern="^[\d+\-\*\/\^\(\)d\s]+$"
+            ></div>
 
             <!-- damageOnMiss average -->
             <div><label class="p-d-block">Average</label>
