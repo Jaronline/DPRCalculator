@@ -41,13 +41,6 @@ const dprForm = document.getElementById("dprForm");
 
 validateAttack();
 
-// TODO:
-// - Halfling Lucky
-// - Once/Turn Damage Boost Bonus On Hit
-// - Once/Turn Damage Boost Bonus On Hit (Not Multiplied on Crit)
-// - Reroll option for attacks
-// - Reroll option for damage
-
 // if using the Calculator for (save DC):
 // INT saves: 71.0% failure rate [INCREASE hit chance by 1/20]
 // DEX saves: 64.2% [REDUCE hit chance by 0]

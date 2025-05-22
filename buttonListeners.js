@@ -50,6 +50,21 @@ function setEventListenersForRound(roundId = 0) {
         return dprForm.querySelector(`fieldset[id="round.${roundId}"]`);
     }
 
+    function getAttachedAttacks(roundId) {
+        return dprForm.querySelectorAll(`fieldset[id^="round.${roundId}.attack."]`);
+    }
+
+    let controller = new AbortController();
+
+    getRoundFieldset(roundId).addEventListener("dispose", function (e) {
+        getAttachedAttacks(roundId).forEach((attackFieldset) => {
+            attackFieldset.dispatchEvent(new Event("dispose"));
+            attackFieldset.remove();
+        });
+        controller.abort();
+        getRoundFieldset(roundId).remove();
+    }, { signal: controller.signal });
+
     newRoundButton.addEventListener("click", function () {
         // try {
         //     const {roundId} = matchRoundAndAttack(newRoundButton.id);
@@ -72,6 +87,7 @@ function setEventListenersForRound(roundId = 0) {
         setEventListenersForRound(newRoundCount);
         validateAttack();
     });
+    }, { signal: controller.signal });
 
     // removeRoundButton.addEventListener("click", function () {
     //     const {roundId} = matchRoundAndAttack(removeRoundButton.id);
@@ -86,13 +102,20 @@ function setEventListenersForRound(roundId = 0) {
     //     validateAttack();
     // });
 
-    setEventListenersForAttack(roundId);
+    if(getAttachedAttacks(roundId).length > 0) {
+        getAttachedAttacks(roundId).forEach((attackFieldset) => {
+            attackFieldset.dispatchEvent(new Event("dispose"));
+        });
+        setEventListenersForAttack(roundId);
+    }
 }
 function setEventListenersForAttack(roundId = 0, attackId = 0) {
     const dprFieldset = document.getElementById("round." + roundId);
     const newAttackButton = document.getElementById("round." + roundId + ".attack."+ attackId +".newAttackButton");
     const copyAttackButton = document.getElementById("round." + roundId + ".attack."+ attackId +".copyAttackButton");
     const removeAttackButton = document.getElementById("round." + roundId + ".attack."+ attackId +".removeAttackButton");
+
+    let controller = new AbortController();
 
     function getAttackFieldset(roundId, attackId) {
         return dprFieldset.querySelector(`fieldset[id="round.${roundId}.attack.${attackId}"]`);
@@ -187,6 +210,11 @@ function setEventListenersForAttack(roundId = 0, attackId = 0) {
         return newAttackFieldset;
     }
 
+    getAttackFieldset(roundId,attackId).addEventListener("dispose", function (e) {
+        controller.abort();
+        getAttackFieldset(roundId,attackId).remove();
+    }, { signal: controller.signal });
+
     newAttackButton.addEventListener("click", function () {
         try {
             const {attackId} = matchRoundAndAttack(newAttackButton.id, true);
@@ -196,7 +224,7 @@ function setEventListenersForAttack(roundId = 0, attackId = 0) {
         } catch (e) {
             console.error(e.message);
         }
-    });
+    }, { signal: controller.signal });
 
     copyAttackButton.addEventListener("click", function () {
         try {
@@ -218,7 +246,7 @@ function setEventListenersForAttack(roundId = 0, attackId = 0) {
         } catch (e) {
             console.error(e.message);
         }
-    });
+    }, { signal: controller.signal });
 
     removeAttackButton.addEventListener("click", function () {
         try {
@@ -230,11 +258,11 @@ function setEventListenersForAttack(roundId = 0, attackId = 0) {
 
             const attackForm = getAttackFieldset(roundId, attackId);
             const previousAttackForm = attackForm.previousElementSibling;
-            attackForm.remove();
+            getAttackFieldset(roundId, attackId).dispatchEvent(new Event("dispose"));
             updateFieldsAfterAttackFieldset(previousAttackForm, roundId, attackId - 1, 1);
             validateAttack();
         } catch (e) {
             console.error(e.message);
         }
-    });
+    }, { signal: controller.signal });
 }
