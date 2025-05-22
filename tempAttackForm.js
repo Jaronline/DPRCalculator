@@ -22,9 +22,9 @@ const a = function(roundCount, attackCount = 0) {
                     <input role="spinbutton"
                            id="${idPrefix}.hitChance"
                            class="p-inputtext p-component p-filled p-inputnumber-input"
-                           type="text" inputmode="numeric"
-                           name="${idPrefix}.hitChance" min="2" max="20"
-                           aria-valuemin="2" aria-valuemax="20"
+                           type="number" inputmode="numeric"
+                           name="${idPrefix}.hitChance" min="1" max="20"
+                           aria-valuemin="1" aria-valuemax="20"
                            aria-valuenow="8" value="8"/>
                 </span>
             </div>
@@ -36,7 +36,7 @@ const a = function(roundCount, attackCount = 0) {
                     <input role="spinbutton"
                            id="${idPrefix}.critRange"
                            class="p-inputtext p-component p-filled p-inputnumber-input"
-                           type="text" inputmode="numeric"
+                           type="number" inputmode="numeric"
                            name="${idPrefix}.critRange" min="2" max="20"
                            aria-valuemin="2" aria-valuemax="20"
                            aria-valuenow="20" value="20"/>
@@ -73,8 +73,7 @@ const a = function(roundCount, attackCount = 0) {
         
             <!-- halflingLucky -->
             <div>
-            <label class="p-d-block" for="${idPrefix}.halflingLucky">Halfling?</label>
-            <input id="${idPrefix}.halflingLucky" name="${idPrefix}.halflingLucky" type="checkbox">
+            <label class="p-d-block" for="${idPrefix}.halflingLucky"><input id="${idPrefix}.halflingLucky" name="${idPrefix}.halflingLucky" type="checkbox" /><span>Halfling?</span></label>
             </div>
         
             <!-- attacks multiplier -->
@@ -84,7 +83,7 @@ const a = function(roundCount, attackCount = 0) {
                     <input role="spinbutton"
                            id="${idPrefix}.multiplier"
                            class="p-inputtext p-component p-filled p-inputnumber-input"
-                           type="text" inputmode="numeric"
+                           type="number" inputmode="numeric"
                            name="${idPrefix}.multiplier" min="1"
                            aria-valuemin="1" aria-valuenow="1" value="1">
                 </span>

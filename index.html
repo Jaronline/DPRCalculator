@@ -47,10 +47,10 @@
             <span>
                 <input role="spinbutton"
                        class="p-inputtext p-component p-filled p-inputnumber-input"
-                       type="text" inputmode="numeric"
+                       type="number" inputmode="numeric"
                        id="round.0.attack.0.hitChance"
-                       name="round.0.attack.0.hitChance" min="2" max="20"
-                       aria-valuemin="2" aria-valuemax="20"
+                       name="round.0.attack.0.hitChance" min="1" max="20"
+                       aria-valuemin="1" aria-valuemax="20"
                        aria-valuenow="8" value="8"/>
             </span>
                 </div>
@@ -61,7 +61,7 @@
             <span>
                 <input role="spinbutton"
                        class="p-inputtext p-component p-filled p-inputnumber-input"
-                       type="text" inputmode="numeric"
+                       type="number" inputmode="numeric"
                        id="round.0.attack.0.critRange"
                        name="round.0.attack.0.critRange" min="2" max="20"
                        aria-valuemin="2" aria-valuemax="20"
@@ -111,7 +111,7 @@
                     <input role="spinbutton"
                            id="round.0.attack.0.multiplier"
                            class="p-inputtext p-component p-filled p-inputnumber-input"
-                           type="text" inputmode="numeric"
+                           type="number" inputmode="numeric"
                            name="round.0.attack.0.multiplier" min="1"
                            aria-valuemin="1" aria-valuenow="1" value="1">
                 </span>
@@ -200,15 +200,5 @@
 </footer>
 <script src="index.js"></script>
 <script type="module" src="buttonListeners.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-       document.addEventListener('change', (event) => {
-            if (event.target.id.includes("round.") && (event.target.id.includes(".attack.") || event.target.id.includes(".lastRound"))) {
-                // Call the function to update the output table
-                validateAttack();
-            }
-        });
-    });
-</script>
 </body>
 </html>

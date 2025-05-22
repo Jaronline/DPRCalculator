@@ -35,6 +35,10 @@ function validForm() {
 
     return isValid;
 }
+
+
+const dprForm = document.getElementById("dprForm");
+
 validateAttack();
 
 // TODO:
