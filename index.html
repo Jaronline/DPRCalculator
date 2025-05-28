@@ -3,193 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <title>DPR Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+
 
 </head>
-<body>
+<body class="bg-[#e8e0d5] bg-size-cover font-family-calibri, sans-serif">
 
-<form action="#" class="p-fluid" id="dprForm">
-    <fieldset id="round.0">
-        <legend>
-            <span>Round #1</span>
-        </legend>
-        <button type="button" id="round.0.newRoundButton">+</button>
-        <button type="button" id="round.0.removeRoundButton" disabled>-</button>
+<div class="flex flex-col  items-center justify-center bg-[#7b1d1d] text-[#f9e3a3] border-b-4 border-[#4a0c0c] shadow-lg p-4 mb-5" style="font-family: 'MedievalSharp', cursive;">
+    <h4 class="text-4xl tracking-wider flex items-center  box-shadow-lg gap-4 p-6">
+        <i class="material-icons dice-icon">casino</i>
+        D&D DPR Calculator
+        <i class="material-icons dice-icon">casino</i>
+    </h4>
+</div>
 
-        <!-- lastRound -->
-        <div>
-            <label for="round.0.lastRound" class="p-d-block">Last Round? (Increased simulation accuracy)</label>
-            <span>
-                        <input role="checkbox"
-                               id="round.0.lastRound"
-                               class="p-checkbox p-component"
-                               type="checkbox"
-                               name="round.0.lastRound" title="Is this round repeatable till the end of the battle? (if you havent already gotten 10 rounds this will be repeated to fill up to 10 rounds)">
-                  </span>
-        </div>
-
-        <fieldset class="p-fieldset p-component" id="round.0.attack.0">
-            <legend>
-                <span>Attack #1</span>
+ <div class="flex flex-col items-center justify-center">
+     <div class="relative border-2 border-[#8b6b36] bg-[#efebe9] rounded-sm shadow-xl p-4 before:content-[''] before:absolute before:inset-1 before:border-2 before:border-[#d5bc79] before:rounded-sm">
+    <form action="#" class="p-fluid" id="dprForm">
+        <fieldset id="round.0" class="border-[#c9b088] bg-[#f5f0e6] border-2 rounded-sm p-3 mb-4">
+            <legend class="text-red-900 font-bold text-base p-3" style="font-family: 'MedievalSharp', sans-serif;">
+                <i class="material-icons">autorenew</i>
+                <span>Round #1</span>
             </legend>
-            <button type="button" id="round.0.attack.0.newAttackButton">
-                <span class="plus">+</span>
-            </button>
-            <button type="button" id="round.0.attack.0.copyAttackButton">
-                <span class="copy">&</span>
-            </button>
-            <button type="button" id="round.0.attack.0.removeAttackButton" disabled>
-                <span class="trash">-</span>
-            </button>
+            <button type="button" id="round.0.newRoundButton">+</button>
+            <button type="button" id="round.0.removeRoundButton" disabled>-</button>
 
-            <!-- hitChance -->
+            <!-- lastRound -->
             <div>
-            <label for="round.0.attack.0.hitChance" class="p-d-block">Min. to Hit</label>
-            <span>
-                <input role="spinbutton"
-                       class="p-inputtext p-component p-filled p-inputnumber-input"
-                       type="number" inputmode="numeric"
-                       id="round.0.attack.0.hitChance"
-                       name="round.0.attack.0.hitChance" min="1" max="20"
-                       aria-valuemin="1" aria-valuemax="20"
-                       aria-valuenow="8" value="8"/>
-            </span>
-                </div>
-
-            <!-- critRange -->
-            <div>
-            <label for="round.0.attack.0.critRange" class="p-d-block">Min. to Crit</label>
-            <span>
-                <input role="spinbutton"
-                       class="p-inputtext p-component p-filled p-inputnumber-input"
-                       type="number" inputmode="numeric"
-                       id="round.0.attack.0.critRange"
-                       name="round.0.attack.0.critRange" min="2" max="20"
-                       aria-valuemin="2" aria-valuemax="20"
-                       aria-valuenow="20" value="20"/>
-            </span>
-
-                </div>
-            <div>
+                <label for="round.0.lastRound" class="p-d-block">Last Round? (Increased simulation accuracy)</label>
                 <span>
-                <label for="round.0.attack.0.missChangePercentage" class="p-d-block">Miss % Chance</label>
-                <span id="round.0.attack.0.missChangePercentage"></span>
-                    </span>
-                <span>
-                <label for="round.0.attack.0.hitChangePercentage" class="p-d-block">Hit % Chance</label>
-                <span id="round.0.attack.0.hitChangePercentage"></span>
-                    </span>
-                <span>
-                <label for="round.0.attack.0.critChangePercentage" class="p-d-block">Crit % Chance</label>
-                <span id="round.0.attack.0.critChangePercentage"></span>
-                    </span>
+                            <input role="checkbox"
+                                   id="round.0.lastRound"
+                                   class="p-checkbox p-component"
+                                   type="checkbox"
+                                   name="round.0.lastRound" title="Is this round repeatable till the end of the battle? (if you havent already gotten 10 rounds this will be repeated to fill up to 10 rounds)">
+                      </span>
             </div>
 
+            <fieldset class="p-fieldset p-component" id="round.0.attack.0">
+                <legend>
+                    <span>Attack #1</span>
+                </legend>
+                <button type="button" id="round.0.attack.0.newAttackButton">
+                    <span class="plus">+</span>
+                </button>
+                <button type="button" id="round.0.attack.0.copyAttackButton">
+                    <span class="copy">&</span>
+                </button>
+                <button type="button" id="round.0.attack.0.removeAttackButton" disabled>
+                    <span class="trash">-</span>
+                </button>
 
-            <!-- hitChanceArrayIndex -->
-            <div>
-            <label>
-                Accuracy Type
-                <select id="round.0.attack.0.hitChanceArrayIndex" name="round.0.attack.0.hitChanceArrayIndex" tabindex="-1" aria-hidden="true">
-                    <option value="0">Disadvantage</option>
-                    <option value="1" selected>Standard</option>
-                    <option value="2">Advantage</option>
-                    <option value="3">Elven Accuracy</option>
-                </select>
-            </label>
-                </div>
-
-            <!-- halflingLucky -->
-            <div>
-            <label class="p-d-block" for="round.0.attack.0.halflingLucky">Halfling?</label>
-            <input id="round.0.attack.0.halflingLucky" type="checkbox">
-                </div>
-
-            <!-- attacks multiplier -->
-            <div>
-            <label for="round.0.attack.0.multiplier" class="p-d-block">Attacks/Turn</label>
+                <!-- hitChance -->
+                <div>
+                <label for="round.0.attack.0.hitChance" class="p-d-block">Min. to Hit</label>
                 <span>
                     <input role="spinbutton"
-                           id="round.0.attack.0.multiplier"
                            class="p-inputtext p-component p-filled p-inputnumber-input"
                            type="number" inputmode="numeric"
-                           name="round.0.attack.0.multiplier" min="1"
-                           aria-valuemin="1" aria-valuenow="1" value="1">
+                           id="round.0.attack.0.hitChance"
+                           name="round.0.attack.0.hitChance" min="1" max="20"
+                           aria-valuemin="1" aria-valuemax="20"
+                           aria-valuenow="8" value="8"/>
                 </span>
-            </div>
+                    </div>
 
-            <!-- damageOnHit -->
-            <div>
-            <label
-                    for="round.0.attack.0.damageOnHit">Damage On Hit</label>
-            <input
-                    name="round.0.attack.0.damageOnHit" class="p-inputtext p-component p-filled"
-                    id="round.0.attack.0.damageOnHit" value="12"
-                    type="text"
-                    pattern="^[\d+\-\*\/\^\(\)d\s]+$"
-            >
+                <!-- critRange -->
+                <div>
+                <label for="round.0.attack.0.critRange" class="p-d-block">Min. to Crit</label>
+                <span>
+                    <input role="spinbutton"
+                           class="p-inputtext p-component p-filled p-inputnumber-input"
+                           type="number" inputmode="numeric"
+                           id="round.0.attack.0.critRange"
+                           name="round.0.attack.0.critRange" min="2" max="20"
+                           aria-valuemin="2" aria-valuemax="20"
+                           aria-valuenow="20" value="20"/>
+                </span>
+
+                    </div>
+                <div>
+                    <span>
+                    <label for="round.0.attack.0.missChangePercentage" class="p-d-block">Miss % Chance</label>
+                    <span id="round.0.attack.0.missChangePercentage"></span>
+                        </span>
+                    <span>
+                    <label for="round.0.attack.0.hitChangePercentage" class="p-d-block">Hit % Chance</label>
+                    <span id="round.0.attack.0.hitChangePercentage"></span>
+                        </span>
+                    <span>
+                    <label for="round.0.attack.0.critChangePercentage" class="p-d-block">Crit % Chance</label>
+                    <span id="round.0.attack.0.critChangePercentage"></span>
+                        </span>
                 </div>
 
-            <!--damageOnHit average -->
-            <div><label class="p-d-block">Average</label>
-                <span id="round.0.attack.0.damageOnHitAverage"></span>
-            </div>
 
-            <!-- damageNotMultiplied -->
-            <div><label for="round.0.attack.0.damageNotMultiplied">Additional Damage NOT multiplied Critical Hit</label>
+                <!-- hitChanceArrayIndex -->
+                <div>
+                <label>
+                    Accuracy Type
+                    <select id="round.0.attack.0.hitChanceArrayIndex" name="round.0.attack.0.hitChanceArrayIndex" tabindex="-1" aria-hidden="true">
+                        <option value="0">Disadvantage</option>
+                        <option value="1" selected>Standard</option>
+                        <option value="2">Advantage</option>
+                        <option value="3">Elven Accuracy</option>
+                    </select>
+                </label>
+                    </div>
+
+                <!-- halflingLucky -->
+                <div>
+                <label class="p-d-block" for="round.0.attack.0.halflingLucky">Halfling?</label>
+                <input id="round.0.attack.0.halflingLucky" type="checkbox">
+                    </div>
+
+                <!-- attacks multiplier -->
+                <div>
+                <label for="round.0.attack.0.multiplier" class="p-d-block">Attacks/Turn</label>
+                    <span>
+                        <input role="spinbutton"
+                               id="round.0.attack.0.multiplier"
+                               class="p-inputtext p-component p-filled p-inputnumber-input"
+                               type="number" inputmode="numeric"
+                               name="round.0.attack.0.multiplier" min="1"
+                               aria-valuemin="1" aria-valuenow="1" value="1">
+                    </span>
+                </div>
+
+                <!-- damageOnHit -->
+                <div>
+                <label
+                        for="round.0.attack.0.damageOnHit">Damage On Hit</label>
                 <input
-                        name="round.0.attack.0.damageNotMultiplied" class="p-inputtext p-component p-filled"
-                        id="round.0.attack.0.damageNotMultiplied" value="2+2"
+                        name="round.0.attack.0.damageOnHit" class="p-inputtext p-component p-filled"
+                        id="round.0.attack.0.damageOnHit" value="12"
                         type="text"
+                        pattern="^[\d+\-\*\/\^\(\)d\s]+$"
+                >
+                    </div>
+
+                <!--damageOnHit average -->
+                <div><label class="p-d-block">Average</label>
+                    <span id="round.0.attack.0.damageOnHitAverage"></span>
+                </div>
+
+                <!-- damageNotMultiplied -->
+                <div><label for="round.0.attack.0.damageNotMultiplied">Additional Damage NOT multiplied Critical Hit</label>
+                    <input
+                            name="round.0.attack.0.damageNotMultiplied" class="p-inputtext p-component p-filled"
+                            id="round.0.attack.0.damageNotMultiplied" value="2+2"
+                            type="text"
+                            pattern="^[\d+\-\*\/\^\(\)d\s]+$"
+                    ></div>
+
+                <!-- damageNotMultiplied average -->
+                <div><label class="p-d-block">Average</label>
+                    <span id="round.0.attack.0.damageNotMultipliedAverage"></span>
+                </div>
+
+                <!-- damageOnCritFlat -->
+                <div><label for="round.0.attack.0.damageOnCritFlat">Damage Bonus on Crit (Not Multiplied)</label>
+                <input
+                        name="round.0.attack.0.damageOnCritFlat" class="p-inputtext p-component"
+                        id="round.0.attack.0.damageOnCritFlat" value=""
                         pattern="^[\d+\-\*\/\^\(\)d\s]+$"
                 ></div>
 
-            <!-- damageNotMultiplied average -->
-            <div><label class="p-d-block">Average</label>
-                <span id="round.0.attack.0.damageNotMultipliedAverage"></span>
-            </div>
+                <!-- damageOnCritFlat average -->
+                <div><label class="p-d-block">Average</label>
+                <span id="round.0.attack.0.damageOnCritFlatAverage"></span>
+                </div>
 
-            <!-- damageOnCritFlat -->
-            <div><label for="round.0.attack.0.damageOnCritFlat">Damage Bonus on Crit (Not Multiplied)</label>
-            <input
-                    name="round.0.attack.0.damageOnCritFlat" class="p-inputtext p-component"
-                    id="round.0.attack.0.damageOnCritFlat" value=""
-                    pattern="^[\d+\-\*\/\^\(\)d\s]+$"
-            ></div>
+                <!-- damageOnCritMultiplied -->
+                <div><label for="round.0.attack.0.damageOnCritMultiplied">Damage Bonus on Crit (Dice Multiplied)</label>
+                <input
+                        name="round.0.attack.0.damageOnCritMultiplied" class="p-inputtext p-component"
+                        id="round.0.attack.0.damageOnCritMultiplied" value=""
+                        pattern="^[\d+\-\*\/\^\(\)d\s]+$"
+                ></div>
 
-            <!-- damageOnCritFlat average -->
-            <div><label class="p-d-block">Average</label>
-            <span id="round.0.attack.0.damageOnCritFlatAverage"></span>
-            </div>
+                <!-- damageOnCritMultiplied average -->
+                <div><label class="p-d-block">Average</label>
+                <span id="round.0.attack.0.damageOnCritMultipliedAverage"></span>
+                </div>
 
-            <!-- damageOnCritMultiplied -->
-            <div><label for="round.0.attack.0.damageOnCritMultiplied">Damage Bonus on Crit (Dice Multiplied)</label>
-            <input
-                    name="round.0.attack.0.damageOnCritMultiplied" class="p-inputtext p-component"
-                    id="round.0.attack.0.damageOnCritMultiplied" value=""
-                    pattern="^[\d+\-\*\/\^\(\)d\s]+$"
-            ></div>
+                <!-- damageOnMiss -->
+                <div><label for="round.0.attack.0.damageOnMiss">Damage Dealt on Miss</label>
+                <input
+                        name="round.0.attack.0.damageOnMiss" class="p-inputtext p-component"
+                        id="round.0.attack.0.damageOnMiss" value=""
+                        pattern="^[\d+\-\*\/\^\(\)d\s]+$"
+                ></div>
 
-            <!-- damageOnCritMultiplied average -->
-            <div><label class="p-d-block">Average</label>
-            <span id="round.0.attack.0.damageOnCritMultipliedAverage"></span>
-            </div>
-
-            <!-- damageOnMiss -->
-            <div><label for="round.0.attack.0.damageOnMiss">Damage Dealt on Miss</label>
-            <input
-                    name="round.0.attack.0.damageOnMiss" class="p-inputtext p-component"
-                    id="round.0.attack.0.damageOnMiss" value=""
-                    pattern="^[\d+\-\*\/\^\(\)d\s]+$"
-            ></div>
-
-            <!-- damageOnMiss average -->
-            <div><label class="p-d-block">Average</label>
-            <span id="round.0.attack.0.damageOnMissAverage"></span>
-            </div>
+                <!-- damageOnMiss average -->
+                <div><label class="p-d-block">Average</label>
+                <span id="round.0.attack.0.damageOnMissAverage"></span>
+                </div>
+            </fieldset>
         </fieldset>
-    </fieldset>
-</form>
-
+    </form>
+ </div>
 <div>
     <table id="outputDPR">
     </table>
