@@ -1,0 +1,21 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "dprcalculator",
+    "compatibility_date": "2025-11-06",
+    "assets": {
+        "directory": "."
+    },
+    "observability": {
+        "enabled": true
+    },
+    "routes": [
+        {
+            "pattern": "dprcalculator.jaronline.dev",
+            "custom_domain": true
+        }
+    ]
+}
