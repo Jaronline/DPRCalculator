@@ -1,0 +1,291 @@
+body {
+    background-color: #e8e0d5;
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: 'Calibri', sans-serif;
+}
+
+.dnd-header {
+    background-color: #7b1d1d;
+    color: #f9e3a3;
+    border-bottom: 4px solid #4a0c0c;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    font-family: 'MedievalSharp', cursive;
+    padding: 15px 0;
+    margin-bottom: 20px;
+}
+
+.dnd-header h4 {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 2px;
+}
+
+.calculator-container {
+    background-color: #f5f0e6;
+    border: 2px solid #8b6b36;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    padding: 25px;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.calculator-container::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border: 1px solid #d5bc79;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+legend {
+    font-family: 'MedievalSharp', cursive;
+    color: #7b1d1d;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 0 10px;
+}
+
+fieldset {
+    border: 1px solid #c9b088;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f5eb;
+}
+
+label {
+    color: #5e4328;
+    font-weight: bold;
+}
+
+.btn {
+    background-color: #7b1d1d;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #9e2929;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-add {
+    background-color: #2e7d32;
+}
+
+.btn-add:hover {
+    background-color: #388e3c;
+}
+
+.btn-copy {
+    background-color: #1565c0;
+}
+
+.btn-copy:hover {
+    background-color: #1976d2;
+}
+
+.btn-remove {
+    background-color: #c62828;
+}
+
+.btn-remove:hover {
+    background-color: #d32f2f;
+}
+
+input[type="text"],
+input[type="number"],
+input,
+select {
+    border: 1px solid #d5bc79 !important;
+    border-radius: 4px !important;
+    background-color: #fffcf5 !important;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    padding-left: 4px !important;
+}
+
+label {
+    font-size: medium;
+}
+
+span {
+    font-size: 1.1rem;
+}
+
+input[type="checkbox"]:checked+span:not(.lever):before {
+    border-right: 2px solid #7b1d1d;
+    border-bottom: 2px solid #7b1d1d;
+}
+
+/* Output Table Styles */
+#outputDPR {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    border: 2px solid #8b6b36;
+    background-color: #f9f5eb;
+}
+
+#outputDPR th {
+    background-color: #7b1d1d;
+    color: #f9e3a3;
+    padding: 12px;
+    text-align: center;
+    font-family: 'MedievalSharp', cursive;
+    font-weight: normal;
+    letter-spacing: 1px;
+}
+
+#outputDPR td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #d5bc79;
+    color: #5e4328;
+}
+
+#outputDPR tr:nth-child(even) {
+    background-color: #f0e6d2;
+}
+
+.stat-value {
+    font-weight: bold;
+    color: #7b1d1d;
+}
+
+footer {
+    margin-top: 20px;
+    padding: 15px;
+    text-align: center;
+    background-color: #3e2b15;
+    color: #f9e3a3;
+    border-top: 2px solid #5e4328;
+}
+
+footer a {
+    color: #f9e3a3;
+    text-decoration: underline;
+}
+
+footer a:hover {
+    color: #ffffff;
+}
+
+/* Dice icon animations */
+.dice-icon {
+    display: inline-block;
+    margin-right: 5px;
+    animation: roll 2s infinite;
+    opacity: 0.8;
+}
+
+@keyframes roll {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    20% {
+        transform: rotate(360deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Select dropdown styling */
+.select-wrapper input.select-dropdown {
+    border: 1px solid #d5bc79 !important;
+    background-color: #fffcf5 !important;
+}
+
+.dropdown-content li>a,
+.dropdown-content li>span {
+    color: #7b1d1d !important;
+}
+
+/* Percentage indicators */
+.percentage-indicator {
+    display: inline-block;
+    padding: 3px 8px;
+    margin: 3px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: center;
+    font-size: larger;
+    min-width: 60px;
+}
+
+.percentage-chance {
+    font-size: 1.2rem;
+}
+
+.miss-percentage {
+    background-color: #ffcdd2;
+    color: #c62828;
+}
+
+.hit-percentage {
+    background-color: #c8e6c9;
+    color: #2e7d32;
+}
+
+.crit-percentage {
+    background-color: #ffe0b2;
+    color: #ef6c00;
+}
+
+/* Add some scroll behavior for long forms */
+@media screen and (max-height: 900px) {
+    .calculator-container {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+}
+
+.p-inputtext.p-component,
+.p-inputtext.p-component.p-filled,
+input.p-inputnumber-input {
+    width: 100%;
+}
+
+[role="checkbox"].p-checkbox.p-component {
+    position: relative;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.flex-center-row {
+    display: flex;
+    align-items: center;
+}
+
+.select-wrapper-container {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: left;
+    flex-direction: column;
+    height: 100%;
+    padding-top: 21px !important;
+    padding-left: 14px;
+}
+
+.button-container {
+    margin-left: 0px;
+
+}
